@@ -1,0 +1,32 @@
+[package]
+name = "taco-smt-model-checker"
+version = "0.1.0"
+edition = "2024"
+description = "Model Checker encoding threshold automaton and a property into a single SMT query. This model checker is part of the TACO toolsuite."
+license-file = "./LICENSE"
+readme = "./README.md"
+homepage.workspace = true
+repository.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories = ["science"]
+
+
+[dependencies]
+taco-threshold-automaton = { version = "0.1.0", path = "../taco-threshold-automaton"}
+taco-smt-encoder = { version = "0.1.0", path = "../taco-smt-encoder" }
+taco-model-checker = { version = "0.1.0", path = "../taco-model-checker" }
+taco-display-utils = { version = "0.1.0", path = "../taco-display-utils" }
+itertools = "0.14.0"
+log = "0.4.28"
+tokio =  { version = "1.48.0", features = ["rt", "rt-multi-thread" ], optional = true }
+futures = { version = "0.3.31", optional = true } 
+
+[features]
+default = []
+parallel = ["dep:tokio", "dep:futures"]
+
+[dev-dependencies]
+taco-parser = { version = "0.1.0", path = "../taco-parser" }
+walkdir = "2.5.0"
+env_logger = "0.11.8"

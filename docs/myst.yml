@@ -1,0 +1,65 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  id: 1ef2b476-ab7f-4869-bd13-7e17f203a02e
+  title: "TACO Model Checker"
+  subtitle: "Model Checker for Threshold Automata"
+  description: |
+    "TACO is an automatic verification toolsuite for the development and \
+    verification of fault-tolerant and threshold-based distributed algorithms."
+  keywords:
+    [
+      taco,
+      documentation,
+      taco documentation,
+      taco docs,
+      user guide,
+      user manual,
+      verification,
+      threshold automaton,
+      protocol verification,
+      model checking,
+      distributed systems,
+      fault tolerance,
+      consensus algorithms,
+    ]
+  authors: ["TACO Contributors"]
+  license:
+    code: "Apache-2.0"
+    content: "CC-BY-4.0"
+  bibliography: ./references.bib
+  copyright: "2026 - The TACO contributors"
+  abbreviations:
+    ETA: "Extended Threshold Automaton"
+    TA: "Threshold Automaton"
+    TACO: "Threshold Automata for COnsensus Model Checker"
+    SMT: "Satisfiability Modulo Theories"
+    ACS: "Abstract Counter System"
+    ZCS: "01-Counter System"
+    BDD: "Binary Decision Diagram"
+  exclude:
+    - "README.md"
+  toc:
+    - file: landing-page.tex
+    - file: theoretical-background.tex
+      children:
+        - file: ./theoretical-background/algorithms.tex
+    - file: usage-cli.md
+      children:
+        - file: ./usage-cli/install.md
+        - file: ./usage-cli/commands.md
+        - file: ./usage-cli/bymc-specification.md
+        - file: ./usage-cli/tla-specification.md
+        - file: ./usage-cli/advanced-configuration.md
+    - file: dev-docs.md
+    - file: about.md
+  plugins:
+    - ./resources/tla-highlighter.mjs
+    - ./resources/ta-highlighter.mjs
+site:
+  template: book-theme
+  options:
+    numbered_references: true
+    style: ./resources/style.css
+    logo: ./resources/taco-org.png
+    favicon: ./resources/taco.png

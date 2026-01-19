@@ -1,0 +1,43 @@
+[package]
+name = "taco-model-checker"
+version = "0.1.0"
+edition = "2024"
+description = "Model Checker interface and specification definitions for model checkers that are part of the TACO toolsuite."
+license-file = "./LICENSE"
+readme = "./README.md"
+homepage.workspace = true
+repository.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories = ["science"]
+
+[dependencies]
+taco-bdd = { version = "0.1.0", path = "../taco-bdd" }
+taco-smt-encoder = { version = "0.1.0", path = "../taco-smt-encoder" }
+taco-display-utils = { version = "0.1.0", path = "../taco-display-utils" }
+taco-threshold-automaton = { version = "0.1.0", path = "../taco-threshold-automaton" }
+log = "0.4.28"
+lazy_static = "1.5.0"
+serde = { version = "1.0.228", optional = true, features = ["derive"] }
+
+[features]
+config_deserialize = ["dep:serde"]
+
+[dev-dependencies]
+taco-parser = { path = "../taco-parser" }
+walkdir = "2.5.0"
+
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+cognitive_complexity = "warn"
+#pedantic = { level = "warn", priority = -1 }
+
+[lints.rustdoc]
+broken_intra_doc_links = "deny"
+missing_crate_level_docs = "deny"
+unescaped_backticks = "warn"
+private_doc_tests = "warn"

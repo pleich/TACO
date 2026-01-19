@@ -1,0 +1,58 @@
+[package]
+name = "taco-cli"
+version = "0.1.0"
+edition = "2024"
+description = "The Threshold Automata for COnsensus Model Checker (TACO) is a tool to verify distributed algorithms that can be modeled using threshold automata"
+license-file = "./LICENSE"
+readme = "./README.md"
+homepage.workspace = true
+repository.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories = ["command-line-utilities", "science"]
+
+
+[dependencies]
+taco-display-utils = { version = "0.1.0", path = "../taco-display-utils"}
+taco-threshold-automaton = { version = "0.1.0", path = "../taco-threshold-automaton" }
+taco-parser = { version = "0.1.0", path = "../taco-parser"}
+taco-model-checker = { version = "0.1.0", path = "../taco-model-checker", features = ["config_deserialize"] }
+taco-zcs-model-checker = { version = "0.1.0", path = "../taco-zcs-model-checker" }
+taco-interval-ta = { version = "0.1.0", path = "../taco-interval-ta" }
+taco-bdd = { version = "0.1.0", path = "../taco-bdd", features = ["config_deserialize"] }
+taco-smt-encoder = { version = "0.1.0", path = "../taco-smt-encoder", features = ["config_deserialize"] }
+taco-smt-model-checker = { version = "0.1.0", path = "../taco-smt-model-checker", features = ["parallel"] }
+taco-acs-model-checker = { version = "0.1.0", path = "../taco-acs-model-checker" }
+clap = { version = "4.5.50", features = ["derive", "color" ] }
+log = "0.4.28"
+log4rs = {version = "1.4.0", features = ["serde"] } 
+human-panic = "2.0.3"
+serde = "1.0.228"
+config = "0.15.18"
+anyhow = "1.0.100"
+
+
+[dev-dependencies]
+serial_test = "3.2.0"
+serde_json = "1.0.145"
+walkdir = "2.5.0"
+
+[features]
+default = ["cudd", "dot"]
+oxidd = ["taco-bdd/oxidd"]
+cudd = ["taco-bdd/cudd"]
+dot = ["taco-threshold-automaton/dot"]
+
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+cognitive_complexity = "warn"
+
+[lints.rustdoc]
+broken_intra_doc_links = "deny"
+missing_crate_level_docs = "deny"
+unescaped_backticks = "warn"
+private_doc_tests = "warn"

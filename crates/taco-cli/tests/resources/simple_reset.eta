@@ -1,0 +1,21 @@
+ta SRB {
+    shared nsnt, rec;
+    parameters n, t, f;
+    assumptions (3) { n > 3 * t; t >= f; f >= 0; }
+    locations (5) { V0: [0]; V1: [1]; RV0: [2]; SE: [3]; AC: [4]; }
+    inits(5) {  nsnt == 0; rec == 0; RV0 == 0; SE == 0; AC == 0;
+        V1 + V0 == n - f; /* n-f correct processes in initial states */ }
+    rules (8) {
+        0: V0 -> RV0 when (true) do { rec' := rec + 1; };
+        1: V1 -> SE when (true) 
+            do { nsnt' := nsnt + 1; rec' := rec + 1; };
+        2: RV0 -> SE when (nsnt >= t + 1 - f) do {};
+        3: SE -> AC when (nsnt >= n - t - f) do {};
+        4: RV0 -> V0 when ((rec >= n - f) && (nsnt > t + 1 - f)) do {};
+        5: RV0 -> V0 when (rec == 0) do {};
+        6: SE -> V1 when ((rec >= n - f) && (nsnt > t + 1 - f)) 
+            do { rec' := 0; nsnt' := 0; };
+        7: SE -> V1 when (rec == 0) do {};
+    }
+    specifications (1) { validity:   V1 == 0 -> [](AC == 0); }
+}

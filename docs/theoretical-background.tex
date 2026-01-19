@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\input{preamble}
+
+\title{Theoretical Background}
+\date{\today}
+
+\begin{document}
+    \maketitle
+
+    \begin{abstract}
+        This part of the documentation is still under construction. 
+
+        It is intended to become a beginner-friendly introduction (and less of a draft of a research paper) to the threshold automaton model and a guide to what flavors of distributed algorithms can be modeled using threshold automaton model.
+
+        For a formal introduction consult the papers that introduced the threshold automata model alongside model-checking algorithms and applied the models to interesting algorithms \citep{SPIN13,JohnKSVW13,GmeinerKSVW14,KonnovVW14,KonnovVW17,memKonnovVW15,KonnovLVW17,KonnovLVW16,KonnovWSS17,Kukovec0W18,BertrandKLW19,Stoilkovska0WZ20,0001LSW23,abs-2011-14789,bala2020complexity,BaumeisterEJSV24}.
+
+        Also check out the previous state-of-the art model checker for threshold automata ByMC~\citep{0001W18, bymcgithub} which unfortunately not maintained anymore and its website is no longer available. Still it contains features like a \href{wiki:Promela}{Promela} which are not implemented in TACO.
+    \end{abstract}
+    
+    This section of the documentation will be dedicated to introducing you to the theoretical models that are used in TACO.
+    We will start by introducing the formal definition of the system model,i.e., threshold automata and their properties with a simple example.
+    Then, \href{algorithms.tex}{Section: Model Checking Algorithms} gives you a high-level overview of the three model checking algorithms implemented in TACO.
+
+    \section{Distributed Algorithms and the Byzantine Generals Problem}
+
+    Before jumping into the model lets first take a look at what kinds of algorithms TACO has been designed for. 
+    
+    So let's start with the question: What are distributed algorithms? In essence, a distributed algorithm is an algorithm designed to be executed by a group of computers, also called nodes, that can communicate over some kind of network. Such algorithms are, for example, vital to scaling modern applications across many servers, often across multiple data centers, or even across the globe.
+
+    However, the distributed setting is hard, or in the words of Lesslie Lamport:
+
+    \begin{quotation}
+        A distributed system is one in which the failure of a computer you didn't even know existed can render your own computer unusable.~\citep{lamport1992distributed}
+    \end{quotation}
+
+    One key challenge that makes the distributed setting hard, is that not all nodes necessarily agree on the current view of the system. For example, initially the nodes of the system might not agree on which nodes are part of the system. To get a number of nodes to agree, one needs to solve the challenge of consensus. 
+
+    The consensus problem asks a set of nodes to agree on a data value by exchanging messages. Many protocols have been developed for achieving consensus, a famous example used in many systems is Raft~\citep{OngaroO14}. However, in a real world distributed setting failures or incorrect behavior must be expected. Unfortunately, failures are often not simple crash-stop failures. 
+
+    To model more complex failure behavior, the model of ``Byzantine Faults'' or byzantine behavior has been developed~\citep{LamportSP82}. A byzantine fault allows a node to behave arbitrarily, it is allowed to follow the protocol and stop responding, or it can actively try to sabotage correct nodes.
+
+    Achieving consensus in such a setting is especially hard, or even impossible if there are more than $1/3 n$ faulty nodes where $n$ is the number of nodes~\citep{LamportSP82}.
+
+    In general most of the consensus algorithms rely on some form of voting. This is where TACOs internal model comes in.
+    
+
+    \input{./theoretical-background/motivating_example.tex}
+
+    \input{./theoretical-background/specs.tex}
+
+
+    For further reading on the model of threshold automata, we refer the reader to \citep{SPIN13,JohnKSVW13,GmeinerKSVW14,KonnovVW14,KonnovVW17,memKonnovVW15,KonnovLVW17,KonnovLVW16,0001W18,0001LSW23,abs-2011-14789,bala2020complexity,BaumeisterEJSV24}.
+
+    The next section \href{algorithms}{Model Checking Algorithms} will introduce the model-checking algorithms implemented in TACO.
+
+    \bibliographystyle{plain}
+    \bibliography{references}
+
+\end{document}

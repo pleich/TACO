@@ -1,0 +1,40 @@
+[package]
+name = "taco-threshold-automaton"
+version = "0.1.0"
+edition = "2024"
+description = "A crate defining basic types for threshold automata and all of its building blocks. This crate is part of the TACO toolsuite."
+license-file = "./LICENSE"
+readme = "./README.md"
+homepage.workspace = true
+repository.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories = ["science"]
+
+
+[dependencies]
+log = "0.4.28"
+taco-display-utils = { version = "0.1.0", path = "../taco-display-utils" }
+num = "0.4.3"
+
+[features]
+default = []
+dot = []
+
+[dev-dependencies]
+walkdir = "2.5.0"
+taco-parser = { path = "../taco-parser" }
+lazy_static = "1.5.0"
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+cognitive_complexity = "warn"
+
+[lints.rustdoc]
+broken_intra_doc_links = "deny"
+missing_crate_level_docs = "deny"
+unescaped_backticks = "warn"
+private_doc_tests = "warn"

@@ -1,0 +1,56 @@
+\input{preamble.tex}
+
+\section{Specifications on Threshold Automata}\label{sec:specs}
+
+
+\subsection{Basic Specifications}
+
+We consider two basic kinds of specifications: \emph{coverability}, which refers to the notion of coverability that is widely used in parametrized verification, e.g., Petri nets~\citep{Finkel91} or VASS~\citep{rackoff1978covering},  and \emph{reachability}.
+
+
+\textbf{Definition:} The \emph{parametrized coverability problem} is: Given a TA and a \emph{coverability specification} $\vec{c} \in \Nat_0^{|L|}$, decide if there is a reachable configuration $\conf_r$\footnote{A configuration $\conf_r$ is said to be reachable if there exists a path starting from an initial configuration and ending in $\conf_r$.} with $\conf_r.\vk[i] \geq \vec{c}[i]$ for all $0 \leq i \leq |L|-1$.
+
+
+\textbf{Definition:} The \emph{parametrized reachability problem} is: Given a TA and a \emph{reachability specification} $\vec{c_r} \in \Nat_0^{|L|}$, decide if there is a reachable configuration $\conf_r$ with $\conf_r.\vk[i] \geq \vec{c_r}[i] \land \left( \conf_r.\vk[i] = 0 \iff \vec{c_r}[i] = 0 \right)$ for all $0 \leq i \leq |L|-1$.
+
+Usually, our specifications are definitions of error configurations, and therefore paths that reach them are called \emph{error paths}.
+
+
+\subsection{$ELTL_{FT}$} 
+
+TACO supports safety specifications in the fragment of $ELTL_{FT}$~\citep{KonnovLVW17,KW18} that can be translated into reachability or coverability properties. Formally, the syntax we support is defined as follows:
+
+\begin{align*}
+\psi &::= \mathsf{pform} \;\;|\;\; \globally \psi \;\;|\;\; \psi \wedge \psi \\
+\mathsf{pform} &::= \mathsf{cform} \;\;|\;\; \mathsf{gform} \vee \mathsf{cform} \\
+\mathsf{cform} &::= \bigwedge_{l \in Locs} \conf.\vk[l] \neq 0
+       \;\;|\;\; \bigvee_{l \in Locs} \conf.\vk[l] = 0
+       \;\;|\;\; \mathsf{cform} \wedge \mathsf{cform} \\
+\mathsf{gform} &::= \varphi
+       \;\;|\;\; \neg \mathsf{gform}
+       \;\;|\;\; \mathsf{gform} \wedge \mathsf{gform}
+\end{align*}
+where $\varphi$ is a guard as defined in \cref{sec:TA} and $Locs \subseteq L$.
+
+\noindent
+Furthermore, TACO also supports lower integer bounds on the number of processes in a specific location. 
+The extended $\mathsf{cform}$ syntax is:
+
+\begin{align*}
+\mathsf{cform} ::= \conf.\vk[l] * n 
+        \;\;|\;\; \conf.\vk[l] = 0 
+        \;\;|\;\; \conf.\vk[l] \neq 0 
+        \;\;|\;\; \mathsf{cform} \wedge \mathsf{cform}
+        \;\;|\;\; \mathsf{cform} \vee \mathsf{cform}
+\end{align*}
+
+\noindent
+where $l \in L, n \in \mathbb{N}$ and $* \in \{>, \geq\}$.
+
+
+\textbf{Example:} One important property for consensus-based distributed algorithms is to check for \emph{validity}, i.e., if no process received a specific value (e.g., 0), then no process should decide on that value.
+\ref{fig:alg-floodmin} specifies the valdity property in $ELTL_{FT}$ as follows:
+\[V1 == 0 \implies \globally (AC == 0)\]
+To check if this property holds, TACO transforms this formula into a coverability specification that requires at least one process to be eventually in location $AC$ while all correct processes initially start in location $V1$.
+If such a configuration is reachable, then the validity property is violated.
+Otherwise the property holds.

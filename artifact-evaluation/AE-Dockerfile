@@ -1,0 +1,72 @@
+# Dockerfile that packages TACO, TACO's source code (including benchmark files),
+# along with TACO's documentation compiled to HTML that can be served using 
+# Apache2 from the container image built from this Dockerfile
+
+FROM quay.io/fedora/fedora-minimal:43
+
+
+LABEL org.opencontainers.image.licenses="Apache 2.0"
+LABEL org.opencontainers.image.authors="Paul Eichler, Tom Baumeister, Mouhammad Sakr, Mahboubeh Kalateh Dowlati, Marcus Völp, Swen Jacobs"
+LABEL org.opencontainers.image.title="TACO - CAV Artifact Evaluation Container Image"
+LABEL org.opencontainers.image.description="\
+    This container image is designed to reproduce the benchmarks for the TACO \
+    paper. It contains all necessary files to reproduce the \
+    benchmark results appearing in the paper as well as the source code and \ 
+    documentation of the TACO model checker."
+LABEL org.opencontainers.image.version="0.1.0"
+
+
+# Install the externally packaged dependencies
+RUN microdnf install -y\
+    # CUDD build dependencies
+    kernel-devel g++ autoconf automake libtool curl gawk\
+    # SMT solver for testing
+    z3 cvc5\
+    # Graphviz for testing
+    graphviz\
+    # Install sudo and some basic text editors
+    time vim nano\
+    # python
+    python3 python3-pip nodejs npm\
+    # Server for documentation
+    httpd \
+    && microdnf clean all
+
+
+# Install rustup
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+
+# Install our documentation tool
+RUN pip3 install mystmd --break-system-packages
+
+
+# Setup TACO and its benchmark script
+WORKDIR /taco
+COPY ./ ./
+RUN cargo install --all-features --bin taco-cli --path ./crates/taco-cli
+RUN cargo clean
+
+RUN ln -s ./scripts/bench-taco.sh benchmark-taco
+ENV PATH="/taco:${PATH}"
+
+# Sanity check that everything works as expected, and remove results
+RUN benchmark-taco --smoke --timeout 1s
+RUN rm taco-exec.csv
+
+
+# Build Docs
+RUN cd ./docs && myst build --html && cd ../
+RUN mkdir -p /var/www/html && mv ./docs/_build/html/* /var/www/html
+RUN cargo doc --no-deps --document-private-items --workspace
+RUN mkdir -p /var/www/html/dev-docs && mv ./target/doc/* /var/www/html/dev-docs/
+RUN cp artifact-evaluation/apache.conf /etc/httpd/taco.conf
+RUN apachectl configtest
+# Convenience script to start the doc server
+RUN chmod +x ./artifact-evaluation/ae-serve-docs.sh
+RUN ln -s ./artifact-evaluation/ae-serve-docs.sh serve-docs
+EXPOSE 80
+
+
+ENTRYPOINT [ "/bin/bash" ]

@@ -1,0 +1,189 @@
+// TLA input file
+// 
+// More information on the supported TLA+ subset can be found in the
+// documentation
+tla_definition = {
+    SOI ~ module_declaration? ~ constant_declaration+ ~ assume_declaration* ~ variable_declaration ~ typeok_declaration ~ init_constraint_declaration? ~ int_macro_declaration* ~ rule_declaration* ~ next_declaration? ~ spec_declaration? ~ (ltl_spec_declaration | int_macro_declaration)* ~ next_declaration? ~ spec_declaration? ~ EOI
+}
+
+// MODULE DECLARATION
+// (unused but essential to also have compatibility with TLA+)
+module_declaration = { "EXTENDS" ~ identifier_list }
+
+// CONSTANT DECLARATION
+// should include `Processes`, `NbOfCorrProcesses` and parameters of threshold
+// automaton
+constant_declaration = { ("CONSTANTS" | "CONSTANT") ~ identifier_list }
+
+// ASSUMPTIONS
+// either combined with '/\' or by multiple assumes
+// specifies resilience conditions
+assume_declaration = { "ASSUME" ~ ("/\\")? ~ int_bool_expr }
+
+// VARIABLES
+// should include ProcessesLocations and all shared variables
+variable_declaration = { ("VARIABLES" | "VARIABLE") ~ identifier_list }
+
+// TYPEOK
+// also called correctness constraints, needs to include all variables
+typeok_declaration = { "TypeOk" ~ assign ~ ("/\\")? ~ set_boolean_expr ~ ("/\\" ~ set_boolean_expr)* }
+
+// INIT
+
+init_constraint_expr = { int_bool_expr | set_boolean_expr }
+
+// Initial conditions on the initial evaluation of variables
+init_constraint_declaration = { "Init" ~ assign ~ ("/\\")? ~ init_constraint_expr ~ ("/\\" ~ init_constraint_expr)* }
+
+// RULE
+
+// Rule names
+// Rule names must follow a specific structure
+rule_identifier = ${ "Rule" ~ integer_const ~ "(" ~ WHITE_SPACE* ~ identifier ~ WHITE_SPACE* ~ ")" }
+
+// constraints a rule specifies
+rule_body_expr = _{ int_bool_expr | integer_update | map_update_expr | map_boolean_expr }
+
+// Rule declaration
+rule_declaration = { rule_identifier ~ assign ~ ("/\\")? ~ rule_body_expr ~ ("/\\" ~ rule_body_expr)* }
+
+// NEXT
+// Specifies transitions, i.e. all the rules that can be applied
+next_declaration = { "Next" ~ assign ~ "\\E" ~ identifier ~ op_in ~ "Processes" ~ ":" ~ ("\\/")? ~ rule_identifier ~ ("\\/" ~ rule_identifier)* }
+
+// SPEC
+// Technically only putting init and next together
+spec_declaration = { "Spec" ~ assign ~ ("Init" ~ "/\\" ~ "[]" ~ "[Next]_" ~ "<<" ~ identifier_list ~ ">>") | ("[]" ~ "[Next]_" ~ "<<" ~ identifier_list ~ ">>" ~ "/\\" ~ "Init") }
+
+// LTL SPECIFICATION
+ltl_spec_declaration = { identifier ~ assign ~ ltl_expr }
+
+// MACRO for integers
+int_macro_declaration = { identifier ~ assign ~ integer_expr }
+
+// UPDATE Expressions
+
+// updated variable prefixed with  '
+update_identifier = _{ identifier ~ "'" }
+
+// variables not updated
+unchanged_expr = { "UNCHANGED" ~ "<<" ~ identifier_list ~ ">>" }
+
+// SET Expressions
+
+// set defined by a set of identifiers
+set_definition_identifier_list = { "{" ~ (string_identifier_list | identifier_list) ~ "}" }
+// set of natural numbers
+nat = { "Nat" }
+
+set = _{ nat | set_definition_identifier_list | map_definition }
+
+// element in set
+set_boolean_expr = { identifier ~ op_in ~ (set | identifier) }
+
+// STRING Identifiers
+
+string_identifier      = _{ "\"" ~ identifier ~ "\"" }
+string_identifier_list =  { string_identifier ~ ("," ~ string_identifier)* }
+
+// MAP
+map_definition = { "[" ~ identifier ~ "->" ~ set ~ "]" }
+
+map_redefinition = { "[" ~ identifier ~ "EXCEPT" ~ "!" ~ "[" ~ identifier ~ "]" ~ "=" ~ string_identifier ~ "]" }
+
+map_entry = ${ identifier ~ "[" ~ WHITE_SPACE* ~ identifier ~ WHITE_SPACE* ~ "]" }
+
+// Constraint over entry in the map
+map_boolean_expr = { map_entry ~ "=" ~ string_identifier }
+
+// update of a map
+map_update_expr = { update_identifier ~ "=" ~ map_redefinition }
+
+// LTL
+
+eventually  = { "<>" }
+globally    = { "[]" }
+implication = { "=>" }
+
+ltl_binary_op = _{ implication | boolean_connective }
+ltl_unary_op  =  { not | eventually | globally }
+
+ltl_atom = { "(" ~ ltl_expr ~ ")" | ltl_unary_op ~ ltl_atom | comparison_expr | bool_const }
+ltl_expr = { ltl_atom ~ (ltl_binary_op ~ ltl_atom)* }
+
+// BOOLEAN EXPRESSIONS
+
+bool_true  = @{ "TRUE" }
+bool_false = @{ "FALSE" }
+bool_const =  { bool_true | bool_false }
+
+and                =  { "/\\" }
+or                 =  { "\\/" }
+boolean_connective = _{ and | or }
+
+not              =  { "~" }
+boolean_unary_op = _{ not }
+
+int_bool_expr = { boolean_unary_op? ~ int_bool_atom ~ (boolean_connective ~ (boolean_unary_op? ~ int_bool_atom))* }
+
+int_bool_atom = { comparison_expr | bool_const | "(" ~ int_bool_expr ~ ")" }
+
+// INTEGER EXPRESSIONS
+
+// Integer Boolean expressions
+equal           =  { "=" }
+not_equal       =  { "/=" }
+less_eq         =  { "<=" }
+less            =  { "<" }
+greater_eq      =  { ">=" }
+greater         =  { ">" }
+comparison_op   = _{ equal | not_equal | less_eq | less | greater_eq | greater }
+comparison_expr =  { integer_expr ~ comparison_op ~ integer_expr }
+
+integer_const = @{ ASCII_DIGIT+ }
+
+add = { "+" }
+sub = { "-" }
+mul = { "*" }
+div = { "/" }
+
+integer_binary_op = _{ add | sub | mul | div }
+
+negation         =  { "-" }
+integer_unary_op = _{ negation }
+
+assignment_expr = { update_identifier ~ "=" ~ integer_expr }
+
+integer_update = { assignment_expr | unchanged_expr }
+
+// Get the cardinality of a finite set
+cardinality_expr = { "Cardinality(" ~ "{" ~ identifier ~ op_in ~ identifier ~ ":" ~ map_boolean_expr ~ ("\\/" ~ map_boolean_expr)* ~ "}" ~ ")" }
+
+// Cardinality must be before identifier
+integer_atom = { integer_const | cardinality_expr | identifier | "(" ~ integer_expr ~ ")" }
+
+integer_expr = { integer_unary_op? ~ integer_atom ~ (integer_binary_op ~ (integer_unary_op? ~ integer_atom))* }
+
+// TLA+ Operators
+assign = _{ "==" }
+
+op_in = _{ "\\in" }
+
+// IDENTIFIERS
+
+// An identifier:
+// - starts with a letter or with "_" followed by at least on letter
+// - can then contain letters, digits and "_"
+// - is not part of reserved key words
+identifier = @{ !("EXTENDS" | "CONSTANTS" | "CONSTANT" | "ASSUME" | "VARIABLES" | "VARIABLE" | "TypeOk" | "Init" | "Rule" | "Next" | "Spec" | "TRUE" | "FALSE") ~ ("_")* ~ ASCII_ALPHA+ ~ (ASCII_ALPHA | "_" | ASCII_DIGIT)* }
+// list of identifiers
+identifier_list = { identifier ~ ("," ~ identifier)* }
+
+COMMENT = _{
+    ("(*" ~ (!"*)" ~ ANY)* ~ "*)")
+  | ("---" ~ (!("\n") ~ ANY)* ~ "\n"?)
+  | ("===" ~ (!("\n") ~ ANY)* ~ "\n"?)
+  | ("\\*" ~ (!("\n") ~ ANY)* ~ "\n"?)
+}
+
+WHITESPACE = _{ " " | "\n" | "\t" | "\r" }

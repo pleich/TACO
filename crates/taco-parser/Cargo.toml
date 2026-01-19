@@ -1,0 +1,40 @@
+[package]
+name = "taco-parser"
+version = "0.1.0"
+edition = "2024"
+description = "A crate containing parsers to parse threshold automata and ELTL specifications from ByMC and TLA+ specification files. This crate is part of the TACO toolsuite."
+license-file = "./LICENSE"
+readme = "./README.md"
+homepage.workspace = true
+repository.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories = ["science", "parser-implementations"]
+
+[dependencies]
+taco-display-utils = { version = "0.1.0", path = "../taco-display-utils" }
+taco-threshold-automaton = { version = "0.1.0", path = "../taco-threshold-automaton" }
+taco-model-checker = { version = "0.1.0", path = "../taco-model-checker" }
+lazy_static = "1.5.0"
+log = "0.4.28"
+pest = "2.8.3"
+pest_derive = "2.8.3"
+anyhow = "1.0.100"
+
+[dev-dependencies]
+walkdir = "2.5.0"
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+cognitive_complexity = "warn"
+
+[lints.rustdoc]
+broken_intra_doc_links = "deny"
+missing_crate_level_docs = "deny"
+unescaped_backticks = "warn"
+private_doc_tests = "warn"
+
+

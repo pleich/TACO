@@ -1,0 +1,27 @@
+[package]
+name = "taco-acs-model-checker"
+version = "0.1.0"
+edition = "2024"
+description = "Model Checker constructing an abstract counter system to verify threshold automata. This model checker is part of the TACO toolsuite."
+readme = "./README.md"
+license-file = "./LICENSE"
+homepage.workspace = true
+repository.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories = ["science"]
+
+
+[dependencies]
+taco-threshold-automaton = { version = "0.1.0", path = "../taco-threshold-automaton"}
+taco-interval-ta = { version = "0.1.0", path = "../taco-interval-ta" }
+taco-smt-encoder = { version = "0.1.0", path = "../taco-smt-encoder" }
+taco-model-checker = { version = "0.1.0", path = "../taco-model-checker" }
+taco-display-utils = { version = "0.1.0", path = "../taco-display-utils" }
+log = "0.4.28"
+
+[dev-dependencies]
+taco-parser = { version = "0.1.0", path = "../taco-parser" }
+walkdir = "2.5.0"
+env_logger = "0.11.8"
+lazy_static = "1.5.0"

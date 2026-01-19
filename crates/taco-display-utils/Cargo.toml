@@ -1,0 +1,14 @@
+[package]
+name = "taco-display-utils"
+version = "0.1.0"
+edition = "2024"
+description = "A small helper crate for displaying iterators. This crate is part of the TACO toolsuite."
+license-file = "./LICENSE"
+readme = "./README.md"
+homepage.workspace = true
+repository.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories = ["value-formatting"]
+
+[dependencies]

@@ -1,0 +1,136 @@
+//! This file specifies a pest grammar for the specification format introduced
+//! by BYMC (https://github.com/konnov/bymc).
+//!
+//! A formal grammar can be found here
+//! https://github.com/konnov/bymc/blob/266366f738bce9dbd5d04336fd9123d85ae2bca1/bymc/doc/ta-format.md?plain=1#L7
+//!
+//! This grammar is more permissive as some benchmarks do not follow the
+//! original grammar.
+
+// Syntax of a complete ByMC specification (`.ta`) file
+bymc_spec = _{
+    SOI ~ ("thresholdAutomaton" | "threshAuto" | "TA" | "ta" | "skel") ~ identifier ~ "{" ~ local_variables* ~ shared_variables* ~ parameters* ~ define_statement* ~ assumption_list? ~ location_list ~ initial_condition_list? ~ rule_list ~ specification_list? ~ "}" ~ EOI
+}
+
+// set of local variables
+local_variables = { "local" ~ identifier_list ~ ";" }
+
+// set of shared variables
+shared_variables = { "shared" ~ identifier_list ~ ";" }
+
+// set of parameters
+parameters = { "parameters" ~ identifier_list ~ ";" }
+
+define_statement = { "define" ~ identifier ~ "==" ~ integer_expr ~ ";" }
+
+// assumptions / resilience conditions
+assumption_list = {
+    ("assumptions" | "assume") ~ "(" ~ integer_const ~ ")" ~ "{" ~ boolean_expr_list ~ "}"
+}
+
+// list of locations / states of the TA
+location      = { identifier ~ ":" ~ "[" ~ integer_const ~ (";" ~ integer_const)* ~ "]" ~ ";" }
+location_list = {
+    "locations" ~ "(" ~ integer_const ~ ")" ~ "{" ~ location* ~ "}"
+}
+
+// list of initial conditions
+initial_condition_list = {
+    "inits" ~ "(" ~ integer_const ~ ")" ~ "{" ~ boolean_expr_list ~ "}"
+}
+
+// Rule syntax
+rule = {
+    integer_const ~ ":" ~ identifier ~ "->" ~ identifier ~ "when" ~ "(" ~ boolean_expr ~ ")" ~ "do" ~ "{" ~ action_list ~ "}" ~ ";"
+}
+// list of rules
+rule_list = {
+    "rules" ~ "(" ~ integer_const ~ ")" ~ "{" ~ rule* ~ "}"
+}
+
+// specification
+specification = { identifier ~ ":" ~ ltl_expr }
+// specifications list
+specification_list = {
+    ("specifications" | "spec") ~ "(" ~ integer_const ~ ")" ~ "{" ~ specification? ~ (";" ~ specification)* ~ ";"? ~ "}"
+}
+
+// UPDATES
+
+unchanged_expr  = { "unchanged(" ~ identifier_list ~ ")" }
+reset_expr      = { "reset(" ~ identifier_list ~ ")" }
+assignment_expr = { identifier ~ "'" ~ ("==" | ":=") ~ integer_expr }
+
+// syntax of updates / actions  in rules
+action_expr = { unchanged_expr | reset_expr | assignment_expr }
+action_list = { (action_expr ~ (";" ~ action_expr)* ~ ";"?)? }
+
+// INTEGER EXPRESSIONS
+
+integer_const = @{ ASCII_DIGIT+ }
+
+add = { "+" }
+sub = { "-" }
+mul = { "*" }
+div = { "/" }
+
+integer_binary_op = _{ add | sub | mul | div }
+
+negation         =  { "-" }
+integer_unary_op = _{ negation }
+
+integer_atom = { integer_const | identifier | "(" ~ integer_expr ~ ")" }
+
+integer_expr = { integer_unary_op? ~ integer_atom ~ (integer_binary_op ~ (integer_unary_op? ~ integer_atom))* }
+
+// BOOLEAN EXPRESSIONS
+
+bool_true  = @{ "true" | "1" }
+bool_false = @{ "false" | "0" }
+bool_const =  { bool_true | bool_false }
+
+and                =  { "&&" }
+or                 =  { "||" }
+boolean_connective = _{ and | or }
+
+not              =  { "!" }
+boolean_unary_op = _{ not }
+
+// comparisons
+equal           =  { "==" }
+n_equal         =  { "!=" | "=!" }
+less_eq         =  { "<=" }
+less            =  { "<" }
+greater_eq      =  { ">=" }
+greater         =  { ">" }
+comparison_op   = _{ equal | n_equal | less_eq | less | greater_eq | greater }
+comparison_expr =  { integer_expr ~ comparison_op ~ integer_expr }
+
+boolean_atom = { bool_const | "(" ~ boolean_expr ~ ")" | comparison_expr }
+
+// full boolean expressions
+boolean_expr      = { boolean_unary_op? ~ boolean_atom ~ (boolean_connective ~ (boolean_unary_op? ~ boolean_atom))* }
+boolean_expr_list = { (boolean_expr ~ (";" ~ boolean_expr)* ~ ";"?)? }
+
+// LTL
+
+eventually  = { "<>" }
+globally    = { "[]" }
+implication = { "->" }
+
+ltl_binary_op = _{ implication | boolean_connective }
+ltl_unary_op  =  { not | eventually | globally }
+
+ltl_atom = { comparison_expr | "(" ~ ltl_expr ~ ")" | ltl_unary_op ~ ltl_atom | bool_const }
+ltl_expr = { ltl_atom ~ (ltl_binary_op ~ ltl_atom)* }
+
+// Identifier:
+// - starts with a letter or with "_" followed by at least on letter
+// - can then contain letters, digits and "_"
+identifier = @{ ("_")* ~ ASCII_ALPHA+ ~ (ASCII_ALPHA | "_" | ASCII_DIGIT)* }
+// list of identifiers
+identifier_list = { identifier ~ ("," ~ identifier)* }
+
+// comments: // for single line comments and /* */ for multiline
+COMMENT    = _{ ("/*" ~ (!"*/" ~ ANY)* ~ "*/") | ("//" ~ (!("\n") ~ ANY)* ~ "\n"?) }
+WHITESPACE = _{ " " | "\n" | "\t" }

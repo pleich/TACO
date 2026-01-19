@@ -1,0 +1,220 @@
+/* a threshold automata for the binary value broadcast in the paper: Holistic verification of Blockchain protocol */
+
+skel Proc {
+
+  local pc;
+  shared b0, b1, a0, a1, a0pa1, b0d, b1d, a0d, a1d, a0pa1d;
+  parameters N, T, F;
+
+
+  assumptions (0) {
+    N > 3 * T;
+    T >= F;
+    F >= 0;
+  }
+
+  locations (0) {
+    locV0: [0];
+    locV1: [1];
+    locB0: [2];
+    locB1: [3];
+    locC0: [4];
+    locB01: [5];
+    locC1: [6];
+    locCB0: [7];
+    locCB1: [8];
+    locC01: [9];
+    locE0: [10];
+    locE1: [11];
+    locD1: [12];
+    locV0d: [13];
+    locV1d: [14];
+    locB0d: [15];
+    locB1d: [16];
+    locC0d: [17];
+    locB01d: [18];
+    locC1d: [19];
+    locCB0d: [20];
+    locCB1d: [21];
+    locC01d: [22];
+    locE0d: [23];
+    locE1d: [24];
+    locD0: [25];
+  }
+
+  inits (0) {
+    (locV0 + locV1) == N - F;
+    locB0 == 0;
+    locB1 == 0;
+    locC0 == 0;
+    locB01 == 0;
+    locC1 == 0;
+    locCB0 == 0;
+    locCB1 == 0;
+    locC01 == 0;
+    locE0 == 0;
+    locE1 == 0;
+    locD1 == 0;
+    locV0d == 0;
+    locV1d == 0;
+    locB0d == 0;
+    locB1d == 0;
+    locC0d == 0;
+    locB01d == 0;
+    locC1d == 0;
+    locCB0d == 0;
+    locCB1d == 0;
+    locC01d == 0;
+    locE0d == 0;
+    locE1d == 0;
+    locD0 == 0;
+    b0 == 0;
+    b1 == 0;
+    a0 == 0;
+    a1 == 0;
+    a0pa1 == 0;
+    b0d == 0;
+    b1d == 0;
+    a0d == 0;
+    a1d == 0;
+    a0pa1d == 0;
+  }
+
+  rules (19) {
+  
+  0: locV0 -> locB0
+      when (true)
+      do {b0' == b0 + 1; };
+  1: locV1 -> locB1
+      when (true)
+      do {b1' == b1 + 1; };
+  2: locB0 -> locC0
+      when (b0 >= 2*T - F + 1)
+      do{a0' == a0 + 1; a0pa1' == a0pa1 + 1;};
+  3: locB0 -> locB01
+      when (b1 >= T - F + 1)
+      do{ b1' == b1 + 1;};
+  4: locB1 -> locC1
+      when (b1 >= 2*T - F + 1)
+      do{a1' == a1 + 1; a0pa1' == a0pa1 + 1;};
+  5: locB1 -> locB01
+      when (b0 >= T - F + 1)
+      do{b0' == b0 + 1;};
+  6: locC0 -> locCB0
+      when (b1 >= T - F + 1)
+      do{b1' == b1 + 1;};
+  7: locB01 -> locCB0
+      when (b0 >= 2*T - F + 1)
+      do{a0' == a0 + 1; a0pa1' == a0pa1 + 1;};
+  8: locB01 -> locCB1
+      when (b1 >= 2*T - F + 1)
+      do{a1' == a1 + 1; a0pa1' == a0pa1 + 1;};
+  9: locC1 -> locCB1
+      when (b0 >= T - F + 1)
+      do{b0' == b0 + 1;};      
+  10: locCB0 -> locC01
+      when (b1 >= 2*T - F + 1)
+      do{a1' == a1 + 1; a0pa1' == a0pa1 + 1;};
+  11: locCB1 -> locC01
+      when (b0 >= 2*T - F + 1)
+      do{a0' == a0 + 1; a0pa1' == a0pa1 + 1;};
+      
+  12: locC0 -> locE0
+      when (a0 >= N - T - F)
+      do{};  
+  13: locCB0 -> locE0
+      when (a0 >= N - T - F)
+      do{};
+  14: locC1 -> locD1
+      when (a1 >= N - T - F)
+      do{};  
+  15: locCB1 -> locD1
+      when (a1 >= N - T - F)
+      do{};
+  16: locE0 -> locV0d
+      when (true)
+      do{};
+  17: locE1 -> locV1d
+      when (true)
+      do{};
+  18: locD1 -> locV1d
+      when (true)
+      do{};      
+  19: locC01 -> locE0
+      when (a0 >= N - T - F)
+      do {}; 
+  20: locC01 -> locE1
+      when (a0pa1 >= N - T - F)
+      do {};     
+  21: locC01 -> locD1
+      when (a1 >= N - T - F)
+      do {};
+      
+  22: locV0d -> locB0d
+      when (true)
+      do {b0d' == b0d + 1; };
+  23: locV1d -> locB1d
+      when (true)
+      do {b1d' == b1d + 1; };
+  24: locB0d -> locC0d
+      when (b0d >= 2*T - F + 1)
+      do{a0d' == a0d + 1; a0pa1d' == a0pa1d + 1;};
+  25: locB0d -> locB01d
+      when (b1d >= T - F + 1)
+      do{ b1d' == b1d + 1;};
+  26: locB1d -> locC1d
+      when (b1d >= 2*T - F + 1)
+      do{a1d' == a1d + 1; a0pa1d' == a0pa1d + 1;};
+  27: locB1d -> locB01d
+      when (b0d >= T - F + 1)
+      do{b0d' == b0d + 1;};
+  28: locC0d -> locCB0d
+      when (b1 >= T - F + 1)
+      do{b1d' == b1d + 1;};
+  29: locB01d -> locCB0d
+      when (b0d >= 2*T - F + 1)
+      do{a0d' == a0d + 1; a0pa1d' == a0pa1d + 1;};
+  30: locB01d -> locCB1d
+      when (b1d >= 2*T - F + 1)
+      do{a1d' == a1d + 1; a0pa1d' == a0pa1d + 1;};
+  31: locC1d-> locCB1d
+      when (b0d >= T - F + 1)
+      do{b0d' == b0d + 1;};      
+  32: locCB0d -> locC01d
+      when (b1d >= 2*T - F + 1)
+      do{a1d' == a1d + 1; a0pa1d' == a0pa1d + 1;};
+  33: locCB1d -> locC01d
+      when (b0d>= 2*T - F + 1)
+      do{a0d' == a0d + 1; a0pa1d' == a0pa1d + 1;};  
+  34: locC0d -> locD0
+      when (a0d >= N - T - F)
+      do{};  
+  35: locCB0d -> locD0
+      when (a0 >= N - T - F)
+      do{};
+  36: locC1d -> locE1d
+      when (a1d >= N - T - F)
+      do{};  
+  37: locCB1d -> locE1d
+      when (a1d >= N - T - F)
+      do{};
+  38: locC01d -> locE0d
+      when (a0pa1d >= N - T - F)
+      do {}; 
+  39: locC01d -> locE1d
+      when (a1d >= N - T - F)
+      do {};     
+  40: locC01d -> locD0
+      when (a0d >= N - T - F)
+      do {};
+  
+  }
+  specifications (0) {
+    
+    BVJust0: (locV0 == 0) -> [](locC0 == 0 && locCB0 == 0 && locC01 == 0);
+    
+    BVJust1: (locV1 == 0) -> [](locC1 == 0 && locCB1 == 0 && locC01 == 0); 
+  }
+} /* Proc */ 
+
+

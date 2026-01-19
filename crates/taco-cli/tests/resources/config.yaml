@@ -1,0 +1,20 @@
+smt:
+  command: "z3"
+  args:
+    - "--smt2"
+    - "-in"
+  options:
+    - parallel: true
+
+bdd:
+  Oxidd:
+    threads: 4
+
+preprocessors:
+  - DropSelfLoops
+  - DropUnreachableLocations
+  - ReplaceTrivialGuardsStatic
+  - ReplaceTrivialGuardsSMT
+  - RemoveUnusedVariables
+  - DropUnsatisfiableRules
+  - CollapseLocations

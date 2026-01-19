@@ -1,0 +1,48 @@
+# Rust build files
+/target
+
+# IntelliJ
+.idea
+
+# VSCode
+.vscode
+
+
+# SMT replay file
+*.smt2
+
+# Log files
+*.log
+
+# Dot visualization files
+*.dot
+
+# Heap track
+*.zst
+
+# Profiling data
+profile.json
+*.profraw
+profile.json*
+
+Cargo.lock
+
+# potential artifacts
+artifact/
+artifact.zip
+
+# Benchmark results
+*.csv
+x/
+
+# Myst build aritfacts
+_build/
+
+# TLA+ artifacts
+states/
+*.cfg
+*.out
+
+# temporary license html
+license.html
+merged-run*

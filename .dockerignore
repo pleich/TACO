@@ -1,0 +1,56 @@
+# local build
+target/
+/target
+
+# vscode
+.vscode/
+.idea
+
+# git
+.git/
+
+# gitignore
+*.gitignore
+
+# SMT replay file
+*.smt2
+
+# Log files
+*.log
+*.out
+
+# Dot files
+*.dot
+
+# CI
+*.gitlab-ci.yml
+.config/nextest.toml
+
+# Profiling data
+profile.json
+*.profraw
+profile.json*
+
+Cargo.lock
+
+# Code guidelines file
+code-guidelines.md
+resources/code-guidelines/
+
+# Unnecessary Dockerfiles
+AE-Dockerfile
+Debug-Dockerfile
+Dockerfile
+
+# Compute Scripts
+./scripts/compute-cluster.sh
+
+# potential artifacts
+artifact/
+artifact.zip
+
+# ignore benchmark results on local machine
+*.log 
+*.out
+*.csv
+x/

@@ -1,0 +1,14 @@
+accepted = [
+    "Apache-2.0",
+    "MIT",
+    "CC0-1.0",
+    "BSD-3-Clause",
+    "Zlib",
+    "ISC",
+    "0BSD",
+    "Unicode-3.0",
+]
+
+ignore-build-dependencies = false
+ignore-dev-dependencies = false
+ignore-transitive-dependencies = false

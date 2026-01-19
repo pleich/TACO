@@ -1,0 +1,37 @@
+\subsection{ZCS Model Checking Algorithm}\label{alg:bdd}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./resources/zcs-algorithm.png}
+    \caption{Workflow of the ZCS model checking algorithm.}
+\end{figure}
+
+The algorithm follows a workflow similar to the ACS-based approach in \cref{sec:alg-wsts} but operates over a different abstract model, the \emph{$01$-counter system} (ZCS).
+A \emph{ZCS} can be seen as a further abstraction of the abstract counter system, where integer counters are replaced by binary counters.
+That is, if the counter of location $i$ is set to 1, this indicates that one or more processes reside in $i$.
+This abstraction has two important consequences.
+First, the ZCS is a finite-state model, as each counter takes only two values.
+Second, the finite state space can be represented compactly and manipulated efficiently using Binary Decision Diagrams (BDDs) \citep{bdds}.
+Therefore, given a TA and a reachability specification, the ZCS algorithm first constructs the corresponding ATA, then creates the ZCS and the set of ZCS error configurations defined by the specification.
+Since a ZCS is finite-state, we perform a BDD-based backward exploration from the error configurations until reaching a fixed point.
+If no initial configuration is included in the fixed point, the TA is deemed correct.
+If an initial configuration is reached, an \emph{error graph} is generated that encodes all potential paths from an initial configuration to an error configuration.
+
+As in the ACS-based approach, the abstraction may introduce spurious error paths.
+To eliminate them, each abstract path in the error graph is checked using an SMT solver.
+If a concrete error path is discovered, the TA is declared incorrect.
+Otherwise all abstract paths are spurious and the TA is correct.
+For ETAs, the procedure is only a semi-decision procedure.
+
+\textbf{Implementation Details.}
+As an input, this algorithm uses a set of IntervalTA (see \cref{fig:architecture}), as explained in the implementation details of~\cref{sec:alg-wsts}.
+
+As a heuristic, a variant of this algorithm can also be used to check only whether the error graph is empty. 
+This requires less bookkeeping than in the standard algorithm and allows it to terminate even faster (at the cost of only giving a definitive answer about correctness if the error graph really is empty).
+
+If an error graph is constructed, then spuriosity checks are done breadth-first, i.e., starting with the shortest paths from initial states to error states.
+
+\textbf{Usage.} To use the ZCS model checking algorithm with TACO, the user needs to specify the option \texttt{zcs} when invoking the tool from the command line.
+Additionally, the user can choose a heuristic for exploring the error graph depending on the input TA by specifying the option \texttt{--heuristic}.
+Since TACO automatically detects whether the input TA is a CTA or an ETA, this flag does not need to be set by the user to choose a suitable heuristic.
+However, if the user wants to check only whether the error graph is empty, they can set the flag to \texttt{empty-error-graph-heuristic}.

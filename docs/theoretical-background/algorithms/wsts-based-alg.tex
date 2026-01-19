@@ -1,0 +1,51 @@
+\subsection{ACS Model Checking Algorithm}\label{sec:alg-wsts}	
+
+\begin{figure}[h]
+    \centering
+    \includegraphics{./resources/acs-model-checking.png}
+    \caption{Workflow of the ACS model checking algorithm.}\label{fig:acs-model-checking}
+\end{figure}
+
+\noindent Given a TA, the algorithm begins by abstracting it into an IntervalTA, and then constructs an \emph{abstract counter system}~(ACS) which models its semantics for an arbitrary number of processes.
+
+The IntervalTA is similar in structure to the original TA, but shared variables are mapped to a finite domain through \emph{parametric interval abstraction}.
+A parametric interval is defined by the thresholds in the TA that may include parameters.
+This abstraction preserves sufficient information about variable valuations to evaluate the guards of all rules in the TA.
+
+Then, an ACS is a formal model such that a \emph{configuration} of the ACS specifies the current number of processes in all locations and the current abstract values (within the finite domain of parametric intervals) of the shared variables.
+It was shown in \citep{BaumeisterEJSV24} that an ACS forms a WSTS, which allows infinite sets of ACS configurations to be represented using finite sets, called \emph{minimal bases}.
+Furthermore, given an infinite set of configurations $S$ represented by its minimal basis, one can effectively compute a minimal basis that represents the infinite set of all configurations that can reach $S$.
+
+Therefore, given a TA and a coverability specification $\vec{c}$, the algorithm generates an ACS and computes the fixed point of all configurations that can reach $\vec{c}$.
+If the fixed point does not include an initial configuration, the TA is deemed correct and we terminate.
+Otherwise, an \emph{error graph} is constructed, representing all abstract paths $\overline{\pi}$ from an initial configuration to an error configuration.
+
+However, these abstract paths can be spurious, for example, transitions between parametric intervals might occur unrealistically fast.
+Every such $\overline{\pi}$ is therefore checked using an SMT solver to determine whether it can be instantiated to a concrete error path $\pi$.
+If such a $\pi$ is found, the TA is incorrect and the algorithm terminates.
+If all abstract paths are spurious, then no concrete error paths exists and the TA is correct.
+Note that the error graph may also be empty, in which case the algorithm can immediately terminate and conclude correctness.
+
+When the input is an ETA, this algorithm becomes a semi-decision procedure: it may fail to terminate if the ETA is correct.
+Note that this algorithm does not support reachability specifications, as the well-quasi order (wqo) of our WSTS is not suitable for representing the sets defined by a reachability specification. 
+
+\textbf{Implementation Details.}
+At the implementation level, the input received (after preprocessing) is internally called a \emph{linear integer arithmetic TA} (LIATA). It corresponds directly to the TA defined in \cref{sec:TA}. 
+As depicted in \cref{fig:architecture}, to use it in this algorithm it is translated into an ACSTA in two steps:
+\begin{enumerate}[noitemsep,topsep=5pt]
+\item To implement the interval abstraction mentioned above, we need a total ordering between thresholds that contain parameters. 
+      $RC$ may constrain the possible orders between the thresholds, but in general we start from a partial order and need to consider all its completions.
+      We use the SMT solver to compute all possible orders under $RC$ and construct the corresponding IntervalTA for each of them.
+      To prove correctness of the original TA, all of these IntervalTA need to be checked.
+\item In the implementation of the ACS state space exploration, each configuration is represented as a vector of integers (where an entry either represents the number of processes is some location, or the interval for the valuation of one shared variable).
+      To facilitate this, an IntervalTA is amended with mappings from shared variables and locations to indices of this configuration vector.
+\end{enumerate}
+      
+To efficiently implement the WSTS-based fixed point computation, a minimal basis of all visited configurations is maintained in a tree data structure, facilitating fast lookups of comparable configurations (with respect to the wqo). 
+This is especially important as we only insert a newly visited configuration if no comparable configuration has been explored. 
+
+As a heuristic that has proven useful, the SMT checks for spuriosity of abstract error paths are done incrementally over the length of the path. 
+This allows us to exclude whole sets of abstract paths with relatively simple SMT queries, and the SMT solver can reuse information from the shorter paths when checking their extensions.
+However, the performance of this heuristic depends on how efficiently the SMT solver supports incremental queries.
+
+\textbf{Usage.} To use the ACS model checking algorithm with TACO, the user needs to specify the option \texttt{acs} when invoking the tool from the command line.

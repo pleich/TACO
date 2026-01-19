@@ -1,0 +1,183 @@
+name: Formatting, Linting, License Checks and Testing
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_VERSION: "1.92.0"
+
+jobs:
+  # Check formatting & basic code validity
+  rustfmt:
+    name: Rust Format & Cargo Check
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: "-D warnings"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rust version
+        run: rustup install ${RUST_VERSION}
+      - name: Add rustfmt
+        run: rustup +${RUST_VERSION} component add rustfmt
+      - name: Check formatting
+        run: cargo +${RUST_VERSION} fmt -- --check
+      - name: check
+        run: cargo +${RUST_VERSION} check --verbose
+
+  # Check the Rust docs are building and that all licenses match out policy
+  doc_check:
+    needs: rustfmt
+    name: Doc Check & License Check
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: "-D warnings"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rust version
+        run: rustup install ${RUST_VERSION}
+      - name: Run Doctests
+        run: cargo test docs --all-features --all-targets
+      - name: Generate Documentation
+        run: cargo doc --no-deps --document-private-items --workspace
+      - name: Install cargo-about
+        run: cargo +${RUST_VERSION} install cargo-about
+      - name: Run license_check
+        run: cargo about generate --workspace ./.config/about.hbs > third-party-licenses.html
+
+  # Checks code style
+  clippy:
+    needs: rustfmt
+    name: Clippy
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: "-D warnings"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rust version
+        run: rustup install ${RUST_VERSION}
+      - name: Add clippy
+        run: rustup +${RUST_VERSION} component add clippy
+      - name: check
+        run: cargo +${RUST_VERSION} clippy --verbose --all-targets --all-features
+  
+  # Run tests on Linux
+  test-linux:
+    needs: clippy
+    name: Tests (Linux)
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: "-D warnings"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rust version
+        run: rustup install ${RUST_VERSION}
+      - name: Install Dependencies (Z3,CVC5,Graphviz)
+        run: sudo apt-get install -y z3 cvc5 graphviz
+      - name: Install Nextest
+        run: cargo +${RUST_VERSION} install cargo-nextest
+      - name: Run unittests
+        run: cargo +${RUST_VERSION} nextest run -P ci --verbose --all-targets --all-features
+      - name: Publish Test Report
+        uses: ctrf-io/github-test-reporter@v1
+        if: always() # always run
+        with:
+          # Core Configuration
+          report-path: 'target/nextest/ci/test-output.xml' # Path or glob pattern to the CTRF report JSON file.
+          # Reports - Choose as many as you like. Default is false. Choosing none will use default reports.
+          summary-report: true
+          summary: true # Post report to the job summary. Default is true
+          title: 'Test Report Linux' # Set a custom title to display on the report.
+          integrations-config: |
+            {
+              "junit-to-ctrf": {
+                "enabled": true,
+                "action": "convert",
+                "options": {
+                  "output": "./ctrf-reports/ctrf-report.json",
+                  "toolname": "junit-to-ctrf",
+                  "useSuiteName": false,
+                  "env": {
+                    "appName": "taco-cli"
+                  }
+                }
+              }
+            }
+          
+  # Run tests on macOS
+  test-macos:
+    needs: clippy
+    name: Tests (MacOS)
+    runs-on: macos-latest
+    env:
+      RUSTFLAGS: "-D warnings"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rust version
+        run: rustup install ${RUST_VERSION}
+      - name: Install Dependencies (Z3,Graphviz)
+        run: brew install z3 graphviz
+      - name: Install CVC5
+        run: brew install --cask cvc5/cvc5/cvc5
+      - name: Install Nextest
+        run: cargo +${RUST_VERSION} install cargo-nextest
+      - name: Run unittests
+        run: cargo +${RUST_VERSION} nextest run -P ci --verbose --all-targets --all-features
+      - name: Publish Test Report
+        uses: ctrf-io/github-test-reporter@v1
+        if: always() # always run
+        with:
+          # Core Configuration
+          report-path: 'target/nextest/ci/test-output.xml' # Path or glob pattern to the CTRF report JSON file.
+          # Reports - Choose as many as you like. Default is false. Choosing none will use default reports.
+          summary-report: true
+          summary: true # Post report to the job summary. Default is true
+          title: 'Test Report MacOS' # Set a custom title to display on the report.
+          integrations-config: |
+            {
+              "junit-to-ctrf": {
+                "enabled": true,
+                "action": "convert",
+                "options": {
+                  "output": "./ctrf-reports/ctrf-report.json",
+                  "toolname": "junit-to-ctrf",
+                  "useSuiteName": false,
+                  "env": {
+                    "appName": "taco-cli"
+                  }
+                }
+              }
+            }
+
+  # Create a coverage report
+  coverage-report:
+    name: Code Coverage report
+    needs: clippy
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: "-D warnings"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rust version
+        run: rustup install ${RUST_VERSION}
+      - name: Install Dependencies (Z3,CVC5,Graphviz)
+        run: sudo apt-get install -y z3 cvc5 graphviz
+      - name: Generate report
+        run: ./scripts/coverage-report.sh
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: ./target/coverage/cobertura.xml
+          badge: true
+          format: markdown
+          fail_below_min: true
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '90 95'
+      - name: Print coverage report to summary
+        run: |
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY

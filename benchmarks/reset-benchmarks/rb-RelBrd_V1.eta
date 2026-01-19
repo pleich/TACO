@@ -1,0 +1,62 @@
+/* check paper : "TSimulating authenticated broadcasts to derive simple fault-tolerant algorithms."  and paper: "Verifying Safety of Synchronous Fault-Tolerant Algorithms by Bounded Model Checking" */
+
+skel Proc {
+
+  local pc;
+  shared nsnt, count;
+  parameters N, T, F;
+
+
+  assumptions (0) {
+    N > 3 * T;
+    T >= F;
+    F >= 0;
+  }
+
+  locations (0) {
+    locV0: [0];
+    locV1: [1];
+    locSE: [2];
+    locAC: [3];
+  }
+
+  inits (0) {
+    locV0 == N - F;
+    locV1 == 0;
+    locSE == 0;
+    locAC == 0;
+    nsnt == 0;
+    count == 0;
+  }
+
+  rules (7) {
+  
+  0: locV0 -> locSE
+      when (nsnt >= T - F + 1)
+      do{nsnt' == nsnt + 1;};
+  1: locV0 -> locAC
+      when (nsnt >= N - T - F)
+      do{count' == count + 1;};
+  2: locV1 -> locSE
+      when (true)
+      do{nsnt' == nsnt + 1;};
+  3: locV1 -> locAC
+      when (nsnt >= N - T - F)
+      do{count' == count + 1;};
+  4: locSE -> locAC
+      when (nsnt >= N - T - F)
+      do{count' == count + 1;};      
+  5: locAC -> locV1
+      when (count >= N-F )
+      do {nsnt'==0; count' ==0;};
+  6: locAC -> locV1
+      when (count < 1)
+      do {};
+  }
+
+  specifications (0) {    
+    validity1: (locV1 == 0) -> [](locAC == 0);
+  }
+} /* Proc */ 
+
+

@@ -1,0 +1,108 @@
+\input{preamble}
+
+\section{Threshold Automata}\label{sec:TA}
+
+This section introduces the underlying theoretical framework of TACO, which are (extended) threshold automata (TA)~\citep{KonnovVW14,KonnovVW17,BaumeisterEJSV24}.
+
+
+%\begin{definition}\label{def:TA}
+\textbf{Definition:}
+
+\label{def:TA} A \emph{threshold automaton} (TA) \citep{KonnovVW14,KonnovVW17} is a tuple $A=(L, \mI, \Shared, \Pi,\Rules, RC)$ where:
+\begin{itemize}[noitemsep,topsep=5pt]
+\item $L$ is a finite set of \emph{locations}.%~(or local states).
+%  We sometimes refer to locations by their indices in $L$.
+%	
+	\item $ \mI \subseteq L$ is the set of \emph{initial locations}.
+%	
+	\item $\Shared = \{x_0,\ldots,x_m\}$ is a finite set of \emph{shared variables} over $\Nat_0$.
+%	
+	\item $\Pi$ is a finite set of \emph{parameter variables} over $\Nat_0$.
+	  %	
+	\item $RC$, the \emph{resilience condition}, is a linear integer arithmetic formula over parameter variables.
+
+	
+	\item $\Rules$ is a set of rules, where a \emph{rule} is a tuple $r=(\from, \to, \varphi,\vup,\resets)$ such that:
+	\begin{itemize}[noitemsep,topsep=5pt]
+		\item $\from,\to \in L$.
+%		
+		\item $\varphi$ is a conjunction of lower guards and upper guards.
+		A \emph{lower guard} is a constraint $a_0 + \sum_{i=1}^{|\Pi|} a_i \cdot p_i \leq x$, with $x \in \Shared$, $a_0,\ldots,a_{|\Pi|} \in \mathbb{Q}$, $p_1,\ldots,p_{|\Pi|} \in \Pi$. An \emph{upper guard} is a constraint $ a_0 + \sum_{i=1}^{|\Pi|} a_i \cdot p_i > x$.\\		
+The left-hand side of a lower or upper guard is called a \emph{threshold}. 
+%		
+		\item $\vup \in \Int^{|\Shared|}$ is an \emph{update vector} for shared variables.
+%	
+	\item $\resets \subseteq \Shared$ is the set of shared variables to be reset to 0.
+	\end{itemize}
+%
+\end{itemize}
+
+%\end{definition}
+
+Most commonly, the parameter variables are $\Pi = \{n,t,f\}$, where $n$ is the number of processes, $t$ is a bound on the number of faulty processes, and $f$ is the actual number of faulty processes.
+This allows $RC$ to express assumptions about the fraction of faulty processes in the system, e.g., $RC = n > 3t\, \land\, t \geq f$.
+
+If $\vup \in \Nat_0^{|\Shared|}$ and no variables are reset, then the TA is called a \emph{canonical TA} (CTA). 
+Otherwise we call it an \emph{extended TA} (ETA)\citep{BaumeisterEJSV24}. 
+
+Note that rechability is in general undecidable for ETA~\citep{Kukovec0W18,BaumeisterEJSV24}. 
+Consequently, TACO's decision procedures become semi-decision procedures for the ETAs, which will in general not terminate when an ETA is safe.
+
+
+\subsection{Semantics}
+
+For a vector $\vp \in \Nat_0^{|\Pi|}$, we write $\vp \models RC$ if $RC$ holds after substituting parameter variables with values according to $\vp$.
+Then the set of \emph{admissible} parameters is $\vP_{RC} = \{\vp \in \Nat_0^{|\Pi|} : \vp \models RC\}$.
+
+Once a TA is specified, the number of processes to be modeled must also be defined through the function $\mN: \vP_{RC} \rightarrow \Nat_0$ (usually $\mN(n,t,f) = n - f$).
+
+
+\textbf{Configurations.} A \emph{configuration} of a TA is a triple $\sigma = (\vk, \vg, \vp)$, where $\vk \in \Nat_0^{|L|}$ assigns a number of processes to each location, $\vg \in \Nat_0^{|\Shared|}$ assigns a valuation to the shared variables, and $\vp \in \vP_{RC}$ assigns a valuation to the parameters.
+We say that a configuration is \emph{initial} if $\vg = \vec{0}$ and $\forall i$ $\vk[i] > 0 \iff l_i \in \mI$.
+
+
+\textbf{Paths.} A rule $r = (\from, \to, \varphi,\vup,\resets)$ is \emph{enabled} in a configuration $\sigma = (\vk,\vg,\vp)$ if $\vec{k}[\from] > 0$ and $(\vg,\vp)$ satisfies the guard $\varphi$.
+In this case, we say that $r(\sigma) = (\vk',\vg',\vp')$ where $\vk'[\from]=\vk[\from] -1$, $\vk'[\to]=\vk[\to] + 1$, $\vg'=\vg + \vup$, and $\vp'=\vp$.
+A \emph{path} $\pi$ is then a finite or infinite sequence of configurations $\pi = \sigma_0, \sigma_1, \ldots$ such that for each $i$ there exists an enabled rule $r_i$ with $\sigma_{i+1} = r_i(\sigma_i)$.
+We denote by $\Paths$ the set of all paths $\pi$ in the threshold automaton.
+
+\vspace{-2em}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{resources/flood-min-pseudo}
+	\caption{Pseudocode of a reliable broadcast protocol.}\label{fig:alg-floodmin}
+  \end{figure}
+\vspace{-1.5em}
+
+
+\textbf{Example:} 
+
+Figure~\ref{fig:alg-floodmin} shows the pseudocode of a reliable broadcast, inspired by~\citep{srikanth1987simulating}.
+In every round, processes with input $v=1$ will broadcast a message, then processes with $v=0$ will set $v=1$ if they received at least $t+1$ messages, and finally processes set $accept=true$ if at least $n-t$ messages have been received. If $accept$ is false at the end of the round, a new round starts. 
+
+\vspace{-2em}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{resources/flood-min-ta}
+	\caption{Threshold automaton of the algorithm in Figure~\ref{fig:alg-floodmin}.}\label{fig:ta-floodmin}
+  \end{figure}
+\vspace{-1.5em}
+
+\textbf{Example:} Figure~\ref{fig:ta-floodmin} depicts a TA for this algorithm, with 
+$L = \{V_0, V_1, RV_0, SE, AC\}$, $\mI = \{V_0, V_1\}$, $\Shared = \{nsnt, rec\}$, $\Pi = \{n, t, f\}$, and 
+$RC = n > 3t \land t \geq f \geq 0$.
+A process in $V_1$ has input $1$ and can move freely (there is no guard) to $SE$, incrementing both variables $nsnt$ and $rec$ to simulate lines~4--6 of the algorithm. 
+A process in location $V_0$ has input $0$ and can move to $RV_0$, incrementing $rec$ to simulate line~6 (but not line 5, since the condition in line~4 evaluates to false). 
+From $RV_0$, a process can move to $SE$ if $nsnt \geq \varphi_1$, simulating lines~$7$-$8$.
+Processes that started with $v=1$ already are in $SE$, corresponding to the fact that $v=1$ is not changed in line 8.\\
+
+Note that instead of being $t+1$, $\varphi_1$ is chosen as $t + 1 - f$.
+This prevents processes from making a transition based on messages from faulty processes, hence the TA represents the behavior of correct processes and $f$ the effect of faulty processes on correct ones.
+For more details on the role of $f$, see~\citep{Stoilkovska0WZ20}. \\
+
+Processes in $SE$ can move to $AC$ if $nsnt \geq \varphi_2$, simulating lines~$9$-$10$.
+If $nsnt < \varphi_2$ and $rec \geq \phi_3$ (this constraint corresponds to waiting long enough for all non-faulty processes to receive all messages), the condition in line~9 was not satisfied and a new iteration of the while-loop is started by moving back from $SE$ to $V_1$.
+The first process taking this transition will reset $nsnt$ and $rec$, the others take the transition that does not change any variables.
+Similarly, processes in $RV_0$ will move to $V_0$ to start the new round.\\
+
+The $RC$ condition is critical here to ensure fault-tolerance: if $f > t$, then $AC$ will be reachable even if all processes start in $V_0$, violating the validity property.

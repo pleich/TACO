@@ -1,0 +1,13 @@
+[store]
+# The directory under the workspace root at which nextest-related files are
+# written. Profile-specific storage is currently written to dir/<profile-name>.
+dir = "target/nextest"
+
+[profile.ci]
+failure-output = "immediate-final"
+fail-fast = false
+
+[profile.ci.junit] 
+path = "test-output.xml"
+store-success-output = true
+store-failure-output = true

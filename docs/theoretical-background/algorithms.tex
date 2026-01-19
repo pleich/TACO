@@ -1,0 +1,19 @@
+
+\input{preamble}
+\title{Model Checking Algorithms}\label{sec:algorithms}
+
+\begin{document}
+
+    In TACO, we implemented three algorithms for model checking safety properties in threshold-based fault-tolerant distributed protocols.
+    The first two algorithms, one based on well-structured transition systems (WSTS) and the other a symbolic algorithm using binary decision diagrams (BDDs), were originally introduced in \citep{BaumeisterEJSV24}.
+    In addition, we provide the first publicly available implementation of the SMT-based reachability algorithm proposed in~\citep{Balasubramanian20}.
+    While the authors of~\citep{Balasubramanian20} reported an implementation and experimental results, their prototype has not been released.
+    In the following, we present a high-level overview of these algorithms and refer the reader to the respective publications for further details.
+
+    \input{./algorithms/smt-based-alg.tex}
+
+    \input{./algorithms/wsts-based-alg.tex}
+
+    \input{./algorithms/bdd-based-alg.tex}
+
+\end{document}

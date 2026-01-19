@@ -1,0 +1,111 @@
+/* a threshold automata for the binary value broadcast in the paper: Holistic verification of Blockchain protocol */
+
+skel Proc {
+
+  local pc;
+  shared b0, b1;
+  parameters N, T, F;
+
+
+  assumptions (0) {
+    N > 3 * T;
+    T >= F;
+    F >= 0;
+  }
+
+  locations (0) {
+    locV0: [0];
+    locV1: [1];
+    locB0: [2];
+    locB1: [3];
+    locC0: [4];
+    locB01: [5];
+    locC1: [6];
+    locCB0: [7];
+    locCB1: [8];
+    locC01: [9];
+  }
+
+  inits (0) {
+    (locV0 + locV1)  == N - F;
+    locB0 == 0;
+    locB1 == 0;
+    locC0 == 0;
+    locB01 == 0;
+    locC1 == 0;
+    locCB0 == 0;
+    locCB1 == 0;
+    locC01 == 0;
+    b0 == 0;
+    b1 == 0;
+  }
+
+  rules (19) {
+  
+  0: locV0 -> locV0
+      when (true)
+      do{};
+  1: locV0 -> locB0
+      when (true)
+      do {b0' == b0 + 1; };
+  2: locV1 -> locV1
+      when (true)
+      do{};
+  3: locV1 -> locB1
+      when (true)
+      do {b1' == b1 + 1; };
+  4: locB0 -> locC0
+      when (b0 >= 2*T - F + 1)
+      do{};
+  5: locB0 -> locB01
+      when (b1 >= T - F + 1)
+      do{ b1' == b1 + 1;};
+  6: locB1 -> locC1
+      when (b1 >= 2*T - F + 1)
+      do{};
+  7: locB1 -> locB01
+      when (b0 >= T - F + 1)
+      do{b0' == b0 + 1;};
+  8: locC0 -> locC0
+      when (true)
+      do{};
+  9: locC0 -> locCB0
+      when (b1 >= T - F + 1)
+      do{b1' == b1 + 1;};
+  10: locB01 -> locCB0
+      when (b0 >= 2*T - F + 1)
+      do{};
+  11: locB01 -> locCB1
+      when (b1 >= 2*T - F + 1)
+      do{};
+  12: locC1 -> locC1
+      when (true)
+      do{};
+  13: locC1 -> locCB1
+      when (b0 >= T - F + 1)
+      do{b0' == b0 + 1;};
+  14: locCB0 -> locCB0
+      when (true)
+      do{};
+  15: locCB0 -> locC01
+      when (b1 >= 2*T - F + 1)
+      do{};
+  16: locCB1 -> locCB1
+      when (true)
+      do{};
+  17: locCB1 -> locC01
+      when (b0 >= 2*T - F + 1)
+      do{};
+  18: locC01 -> locC01
+      when (true)
+      do{};
+  }
+
+  specifications (0) {
+    BVJust0: (locV0 == 0) -> [](locC0 == 0 && locCB0 == 0 && locC01 == 0);
+
+    BVJust1: (locV1 == 0) -> [](locC1 == 0 && locCB1 == 0 && locC01 == 0);
+  }
+} /* Proc */ 
+
+

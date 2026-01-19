@@ -1,0 +1,709 @@
+skel Proc {
+  local nrcvde, nrcvdr, pc;
+  shared nsnte, nsntr;
+  parameters N, T, F, NplusTdiv2;
+  assumptions (7) {
+    ((2 * NplusTdiv2) == (N + T)  ||  (2 * NplusTdiv2) == ((N + T) - 1));
+    N > 3;
+    F >= 0;
+    T >= 1;
+    N > (3 * T);
+    F <= T;
+    (NplusTdiv2 + 1) == ((2 * T) + 1);
+  }
+
+  locations (37) {
+    loc0_0_0: [0; 0; 0];
+    loc3_0_2: [3; 0; 2];
+    loc3_0_3: [3; 0; 3];
+    loc3_2_3: [3; 2; 3];
+    loc3_3_4: [3; 3; 4];
+    loc3_1_3: [3; 1; 3];
+    loc3_3_3: [3; 3; 3];
+    loc3_3_2: [3; 3; 2];
+    loc3_1_2: [3; 1; 2];
+    loc3_2_2: [3; 2; 2];
+    loc1_3_2: [1; 3; 2];
+    loc2_3_3: [2; 3; 3];
+    loc2_3_4: [2; 3; 4];
+    loc1_3_3: [1; 3; 3];
+    loc1_3_4: [1; 3; 4];
+    loc2_3_2: [2; 3; 2];
+    loc2_2_2: [2; 2; 2];
+    loc2_2_3: [2; 2; 3];
+    loc1_2_2: [1; 2; 2];
+    loc1_2_3: [1; 2; 3];
+    loc0_3_2: [0; 3; 2];
+    loc0_3_3: [0; 3; 3];
+    loc0_3_4: [0; 3; 4];
+    loc0_2_2: [0; 2; 2];
+    loc0_2_3: [0; 2; 3];
+    loc1_0_0: [1; 0; 0];
+    loc2_0_0: [2; 0; 0];
+    loc2_1_0: [2; 1; 0];
+    loc1_1_0: [1; 1; 0];
+    loc0_1_0: [0; 1; 0];
+    loc0_0_1: [0; 0; 1];
+    loc0_0_2: [0; 0; 2];
+    loc2_1_2: [2; 1; 2];
+    loc1_1_2: [1; 1; 2];
+    loc0_1_2: [0; 1; 2];
+    loc2_0_2: [2; 0; 2];
+    loc1_0_2: [1; 0; 2];
+  }
+
+  inits (38) {
+    (loc0_0_1 + loc0_0_0) == (N - F);
+    loc0_0_2 == 0;
+    loc3_0_2 == 0;
+    loc3_3_2 == 0;
+    loc3_1_2 == 0;
+    loc3_2_2 == 0;
+    loc2_1_2 == 0;
+    loc1_1_2 == 0;
+    loc0_1_2 == 0;
+    loc1_3_2 == 0;
+    loc2_3_2 == 0;
+    loc2_2_2 == 0;
+    loc1_2_2 == 0;
+    loc2_0_2 == 0;
+    loc1_0_2 == 0;
+    loc0_3_2 == 0;
+    loc0_2_2 == 0;
+    loc1_0_0 == 0;
+    loc2_0_0 == 0;
+    loc0_1_0 == 0;
+    loc1_1_0 == 0;
+    loc2_1_0 == 0;
+    loc3_0_3 == 0;
+    loc3_2_3 == 0;
+    loc1_2_3 == 0;
+    loc2_2_3 == 0;
+    loc0_2_3 == 0;
+    loc2_3_3 == 0;
+    loc1_3_3 == 0;
+    loc0_3_3 == 0;
+    loc3_3_3 == 0;
+    loc3_1_3 == 0;
+    loc0_3_4 == 0;
+    loc1_3_4 == 0;
+    loc2_3_4 == 0;
+    loc3_3_4 == 0;
+    nsnte == 0;
+    nsntr == 0;
+  }
+
+  rules (202) {
+  0: loc3_3_4 -> loc3_3_4
+      when (1)
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  1: loc2_3_4 -> loc2_3_4
+      when (1)
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  2: loc1_3_4 -> loc1_3_4
+      when (1)
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  3: loc0_3_4 -> loc0_3_4
+      when (1)
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  4: loc3_1_3 -> loc3_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  5: loc3_1_3 -> loc3_1_3
+      when ((nsntr + F) >= 1)
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  6: loc3_1_3 -> loc3_2_3
+      when ((nsntr + F) >= (T + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  7: loc3_3_3 -> loc3_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  8: loc0_3_3 -> loc0_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  9: loc1_3_3 -> loc1_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  10: loc2_3_3 -> loc2_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  11: loc0_2_3 -> loc0_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  12: loc0_2_3 -> loc0_2_3
+      when ((nsntr + F) >= (T + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  13: loc2_2_3 -> loc2_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  14: loc2_2_3 -> loc2_2_3
+      when ((nsntr + F) >= (T + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  15: loc1_2_3 -> loc1_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  16: loc1_2_3 -> loc1_2_3
+      when ((nsntr + F) >= (T + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  17: loc3_2_3 -> loc3_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  18: loc3_2_3 -> loc3_2_3
+      when ((nsntr + F) >= (T + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  19: loc3_0_3 -> loc3_3_4
+      when ((nsntr + F) >= ((2 * T) + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  20: loc3_0_3 -> loc3_1_3
+      when ((nsntr + F) >= 1)
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  21: loc3_0_3 -> loc3_2_3
+      when ((nsntr + F) >= (T + 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  22: loc3_0_3 -> loc3_0_3
+      when (((nsntr + F) >= 1  ||  (nsntr + F) == 0))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  23: loc2_1_0 -> loc2_1_0
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  24: loc2_1_0 -> loc2_2_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  25: loc2_1_0 -> loc2_3_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  26: loc2_1_0 -> loc3_2_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  27: loc2_1_0 -> loc3_1_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  28: loc2_1_0 -> loc3_3_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  29: loc1_1_0 -> loc2_1_0
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  30: loc1_1_0 -> loc1_1_0
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  31: loc1_1_0 -> loc1_2_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  32: loc1_1_0 -> loc2_2_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  33: loc1_1_0 -> loc2_3_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  34: loc1_1_0 -> loc1_3_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  35: loc1_1_0 -> loc3_2_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  36: loc1_1_0 -> loc3_1_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  37: loc1_1_0 -> loc3_3_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  38: loc0_1_0 -> loc2_1_0
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  39: loc0_1_0 -> loc1_1_0
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  40: loc0_1_0 -> loc0_1_0
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  41: loc0_1_0 -> loc0_2_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  42: loc0_1_0 -> loc0_3_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  43: loc0_1_0 -> loc1_2_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  44: loc0_1_0 -> loc2_2_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  45: loc0_1_0 -> loc2_3_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  46: loc0_1_0 -> loc1_3_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  47: loc0_1_0 -> loc3_2_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  48: loc0_1_0 -> loc3_1_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  49: loc0_1_0 -> loc3_3_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  50: loc2_0_0 -> loc2_1_0
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  51: loc2_0_0 -> loc2_0_0
+      when (((nsnte + F) >= (T + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  52: loc2_0_0 -> loc2_2_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  53: loc2_0_0 -> loc2_3_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  54: loc2_0_0 -> loc3_2_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  55: loc2_0_0 -> loc3_1_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  56: loc2_0_0 -> loc3_3_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  57: loc2_0_0 -> loc3_0_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  58: loc1_0_0 -> loc2_1_0
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  59: loc1_0_0 -> loc1_1_0
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  60: loc1_0_0 -> loc2_0_0
+      when (((nsnte + F) >= (T + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  61: loc1_0_0 -> loc1_0_0
+      when (((nsnte + F) >= 1  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  62: loc1_0_0 -> loc1_2_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  63: loc1_0_0 -> loc2_2_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  64: loc1_0_0 -> loc2_3_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  65: loc1_0_0 -> loc1_3_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  66: loc1_0_0 -> loc3_2_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  67: loc1_0_0 -> loc3_1_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  68: loc1_0_0 -> loc3_3_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  69: loc1_0_0 -> loc3_0_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  70: loc0_0_0 -> loc2_1_0
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  71: loc0_0_0 -> loc1_1_0
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  72: loc0_0_0 -> loc0_1_0
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  73: loc0_0_0 -> loc2_0_0
+      when (((nsnte + F) >= (T + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  74: loc0_0_0 -> loc1_0_0
+      when (((nsnte + F) >= 1  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  75: loc0_0_0 -> loc0_0_0
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  76: loc0_0_0 -> loc0_2_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  77: loc0_0_0 -> loc0_3_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  78: loc0_0_0 -> loc1_2_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  79: loc0_0_0 -> loc2_2_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  80: loc0_0_0 -> loc2_3_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  81: loc0_0_0 -> loc1_3_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  82: loc0_0_0 -> loc3_2_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  83: loc0_0_0 -> loc3_1_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  84: loc0_0_0 -> loc3_3_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  85: loc0_0_0 -> loc3_0_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  86: loc0_2_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  87: loc0_2_2 -> loc0_3_3
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  88: loc0_2_2 -> loc1_3_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  89: loc0_2_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  90: loc0_2_2 -> loc0_2_3
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  91: loc0_2_2 -> loc2_2_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  92: loc0_2_2 -> loc1_2_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  93: loc0_2_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  94: loc0_3_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  95: loc0_3_2 -> loc0_3_3
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  96: loc0_3_2 -> loc1_3_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  97: loc0_3_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  98: loc1_0_2 -> loc3_1_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  99: loc1_0_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  100: loc1_0_2 -> loc1_3_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  101: loc1_0_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  102: loc1_0_2 -> loc2_2_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  103: loc1_0_2 -> loc1_2_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  104: loc1_0_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  105: loc1_0_2 -> loc3_0_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  106: loc1_0_2 -> loc1_0_2
+      when (((nsnte + F) >= 1  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  107: loc1_0_2 -> loc2_0_2
+      when (((nsnte + F) >= (T + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  108: loc1_0_2 -> loc1_1_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  109: loc1_0_2 -> loc2_1_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  110: loc2_0_2 -> loc3_1_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  111: loc2_0_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  112: loc2_0_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  113: loc2_0_2 -> loc2_2_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  114: loc2_0_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  115: loc2_0_2 -> loc3_0_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  116: loc2_0_2 -> loc2_0_2
+      when (((nsnte + F) >= (T + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  117: loc2_0_2 -> loc2_1_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  118: loc1_2_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  119: loc1_2_2 -> loc1_3_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  120: loc1_2_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  121: loc1_2_2 -> loc2_2_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  122: loc1_2_2 -> loc1_2_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  123: loc1_2_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  124: loc2_2_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  125: loc2_2_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  126: loc2_2_2 -> loc2_2_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  127: loc2_2_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  128: loc2_3_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  129: loc2_3_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  130: loc1_3_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  131: loc1_3_2 -> loc1_3_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  132: loc1_3_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  133: loc0_1_2 -> loc3_1_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  134: loc0_1_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  135: loc0_1_2 -> loc0_3_3
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  136: loc0_1_2 -> loc1_3_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  137: loc0_1_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  138: loc0_1_2 -> loc0_2_3
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  139: loc0_1_2 -> loc2_2_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  140: loc0_1_2 -> loc1_2_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  141: loc0_1_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  142: loc0_1_2 -> loc0_1_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  143: loc0_1_2 -> loc1_1_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  144: loc0_1_2 -> loc2_1_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  145: loc1_1_2 -> loc3_1_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  146: loc1_1_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  147: loc1_1_2 -> loc1_3_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  148: loc1_1_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  149: loc1_1_2 -> loc2_2_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  150: loc1_1_2 -> loc1_2_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  151: loc1_1_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  152: loc1_1_2 -> loc1_1_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  153: loc1_1_2 -> loc2_1_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  154: loc2_1_2 -> loc3_1_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  155: loc2_1_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  156: loc2_1_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  157: loc2_1_2 -> loc2_2_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  158: loc2_1_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  159: loc2_1_2 -> loc2_1_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  160: loc3_2_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  161: loc3_2_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  162: loc3_1_2 -> loc3_1_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  163: loc3_1_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  164: loc3_1_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  165: loc3_3_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  166: loc3_0_2 -> loc3_1_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  167: loc3_0_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  168: loc3_0_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  169: loc3_0_2 -> loc3_0_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  170: loc0_0_2 -> loc3_1_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  171: loc0_0_2 -> loc3_3_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  172: loc0_0_2 -> loc0_3_3
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  173: loc0_0_2 -> loc1_3_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  174: loc0_0_2 -> loc2_3_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  175: loc0_0_2 -> loc0_2_3
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  176: loc0_0_2 -> loc2_2_3
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  177: loc0_0_2 -> loc1_2_3
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  178: loc0_0_2 -> loc3_2_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  179: loc0_0_2 -> loc3_0_3
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == (nsntr + 1); nsnte' == nsnte; };
+  180: loc0_0_2 -> loc1_0_2
+      when (((nsnte + F) >= 1  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  181: loc0_0_2 -> loc2_0_2
+      when (((nsnte + F) >= (T + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  182: loc0_0_2 -> loc0_1_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  183: loc0_0_2 -> loc1_1_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  184: loc0_0_2 -> loc2_1_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  185: loc0_0_2 -> loc0_0_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == nsnte; };
+  186: loc0_0_1 -> loc0_2_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  187: loc0_0_1 -> loc0_3_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  188: loc0_0_1 -> loc1_0_2
+      when (((nsnte + F) >= 1  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  189: loc0_0_1 -> loc2_0_2
+      when (((nsnte + F) >= (T + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  190: loc0_0_1 -> loc1_2_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  191: loc0_0_1 -> loc2_2_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  192: loc0_0_1 -> loc2_3_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  193: loc0_0_1 -> loc1_3_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  194: loc0_0_1 -> loc0_1_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  195: loc0_0_1 -> loc1_1_2
+      when (((nsnte + F) >= 1  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  196: loc0_0_1 -> loc2_1_2
+      when (((nsnte + F) >= (T + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  197: loc0_0_1 -> loc3_2_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= (T + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  198: loc0_0_1 -> loc3_1_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= 1))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  199: loc0_0_1 -> loc3_3_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  (nsntr + F) >= ((2 * T) + 1)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  200: loc0_0_1 -> loc3_0_2
+      when (((nsnte + F) >= ((2 * T) + 1)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  201: loc0_0_1 -> loc0_0_2
+      when ((((nsnte + F) >= 1  ||  (nsnte + F) == 0)  &&  ((nsntr + F) >= 1  ||  (nsntr + F) == 0)))
+      do { nsntr' == nsntr; nsnte' == (nsnte + 1); };
+  }
+  specifications (3) {
+    agreement: ((([](<>((((((nsntr < ((2 * T) + 1)  ||  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc1_2_3 == 0  &&  (loc1_2_2 == 0  &&  (loc2_2_3 == 0  &&  (loc2_2_2 == 0  &&  (loc3_2_2 == 0  &&  loc3_2_3 == 0))))))))  &&  (nsntr < ((2 * T) + 1)  ||  (loc0_1_2 == 0  &&  (loc1_1_2 == 0  &&  (loc2_1_2 == 0  &&  (loc0_1_0 == 0  &&  (loc1_1_0 == 0  &&  (loc2_1_0 == 0  &&  (loc3_1_2 == 0  &&  loc3_1_3 == 0)))))))))  &&  ((nsntr < (T + 1)  ||  nsntr >= ((2 * T) + 1))  ||  (loc0_1_2 == 0  &&  (loc1_1_2 == 0  &&  (loc2_1_2 == 0  &&  (loc0_1_0 == 0  &&  (loc1_1_0 == 0  &&  (loc2_1_0 == 0  &&  (loc3_1_2 == 0  &&  loc3_1_3 == 0)))))))))  &&  (nsntr < ((2 * T) + 1)  ||  (loc1_0_2 == 0  &&  (loc2_0_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc2_0_0 == 0  &&  (loc1_0_0 == 0  &&  (loc3_0_3 == 0  &&  (loc3_0_2 == 0  &&  loc0_0_0 == 0))))))))))  &&  ((nsntr < (T + 1)  ||  nsntr >= ((2 * T) + 1))  ||  (loc1_0_2 == 0  &&  (loc2_0_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc2_0_0 == 0  &&  (loc1_0_0 == 0  &&  (loc3_0_3 == 0  &&  (loc3_0_2 == 0  &&  loc0_0_0 == 0))))))))))  &&  ((nsntr < 1  ||  nsntr >= (T + 1))  ||  (loc1_0_2 == 0  &&  (loc2_0_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc2_0_0 == 0  &&  (loc1_0_0 == 0  &&  (loc3_0_3 == 0  &&  (loc3_0_2 == 0  &&  loc0_0_0 == 0))))))))))))  &&  ([](<>((((((nsnte < ((2 * T) + 1)  ||  (loc2_0_2 == 0  &&  (loc2_1_2 == 0  &&  (loc2_1_0 == 0  &&  (loc2_0_0 == 0  &&  (loc2_2_3 == 0  &&  (loc2_2_2 == 0  &&  (loc2_3_2 == 0  &&  (loc2_3_4 == 0  &&  loc2_3_3 == 0)))))))))  &&  (nsnte < ((2 * T) + 1)  ||  (loc1_0_2 == 0  &&  (loc1_1_2 == 0  &&  (loc1_1_0 == 0  &&  (loc1_0_0 == 0  &&  (loc1_2_3 == 0  &&  (loc1_2_2 == 0  &&  (loc1_3_4 == 0  &&  (loc1_3_3 == 0  &&  loc1_3_2 == 0))))))))))  &&  ((nsnte < (T + 1)  ||  nsnte >= ((2 * T) + 1))  ||  (loc1_0_2 == 0  &&  (loc1_1_2 == 0  &&  (loc1_1_0 == 0  &&  (loc1_0_0 == 0  &&  (loc1_2_3 == 0  &&  (loc1_2_2 == 0  &&  (loc1_3_4 == 0  &&  (loc1_3_3 == 0  &&  loc1_3_2 == 0))))))))))  &&  (nsnte < ((2 * T) + 1)  ||  (loc0_1_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc0_1_0 == 0  &&  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc0_3_4 == 0  &&  (loc0_3_3 == 0  &&  (loc0_3_2 == 0  &&  loc0_0_0 == 0)))))))))))  &&  ((nsnte < (T + 1)  ||  nsnte >= ((2 * T) + 1))  ||  (loc0_1_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc0_1_0 == 0  &&  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc0_3_4 == 0  &&  (loc0_3_3 == 0  &&  (loc0_3_2 == 0  &&  loc0_0_0 == 0)))))))))))  &&  ((nsnte < 1  ||  nsnte >= (T + 1))  ||  (loc0_1_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc0_1_0 == 0  &&  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc0_3_4 == 0  &&  (loc0_3_3 == 0  &&  (loc0_3_2 == 0  &&  loc0_0_0 == 0)))))))))))))) -> ((loc0_3_4 == 0  &&  (loc1_3_4 == 0  &&  (loc2_3_4 == 0  &&  loc3_3_4 == 0)))  ||  (<>(loc1_0_2 == 0  &&  (loc2_0_2 == 0  &&  (loc0_1_2 == 0  &&  (loc1_1_2 == 0  &&  (loc2_1_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc0_1_0 == 0  &&  (loc1_1_0 == 0  &&  (loc2_1_0 == 0  &&  (loc2_0_0 == 0  &&  (loc1_0_0 == 0  &&  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc0_3_3 == 0  &&  (loc0_3_2 == 0  &&  (loc1_2_3 == 0  &&  (loc1_2_2 == 0  &&  (loc2_2_3 == 0  &&  (loc2_2_2 == 0  &&  (loc2_3_2 == 0  &&  (loc1_3_3 == 0  &&  (loc2_3_3 == 0  &&  (loc1_3_2 == 0  &&  (loc3_2_2 == 0  &&  (loc3_1_2 == 0  &&  (loc3_3_2 == 0  &&  (loc3_3_3 == 0  &&  (loc3_1_3 == 0  &&  (loc3_2_3 == 0  &&  (loc3_0_3 == 0  &&  (loc3_0_2 == 0  &&  loc0_0_0 == 0)))))))))))))))))))))))))))))))))));
+    corr: ((([](<>((((((nsntr < ((2 * T) + 1)  ||  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc1_2_3 == 0  &&  (loc1_2_2 == 0  &&  (loc2_2_3 == 0  &&  (loc2_2_2 == 0  &&  (loc3_2_2 == 0  &&  loc3_2_3 == 0))))))))  &&  (nsntr < ((2 * T) + 1)  ||  (loc0_1_2 == 0  &&  (loc1_1_2 == 0  &&  (loc2_1_2 == 0  &&  (loc0_1_0 == 0  &&  (loc1_1_0 == 0  &&  (loc2_1_0 == 0  &&  (loc3_1_2 == 0  &&  loc3_1_3 == 0)))))))))  &&  ((nsntr < (T + 1)  ||  nsntr >= ((2 * T) + 1))  ||  (loc0_1_2 == 0  &&  (loc1_1_2 == 0  &&  (loc2_1_2 == 0  &&  (loc0_1_0 == 0  &&  (loc1_1_0 == 0  &&  (loc2_1_0 == 0  &&  (loc3_1_2 == 0  &&  loc3_1_3 == 0)))))))))  &&  (nsntr < ((2 * T) + 1)  ||  (loc1_0_2 == 0  &&  (loc2_0_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc2_0_0 == 0  &&  (loc1_0_0 == 0  &&  (loc3_0_3 == 0  &&  (loc3_0_2 == 0  &&  loc0_0_0 == 0))))))))))  &&  ((nsntr < (T + 1)  ||  nsntr >= ((2 * T) + 1))  ||  (loc1_0_2 == 0  &&  (loc2_0_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc2_0_0 == 0  &&  (loc1_0_0 == 0  &&  (loc3_0_3 == 0  &&  (loc3_0_2 == 0  &&  loc0_0_0 == 0))))))))))  &&  ((nsntr < 1  ||  nsntr >= (T + 1))  ||  (loc1_0_2 == 0  &&  (loc2_0_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc2_0_0 == 0  &&  (loc1_0_0 == 0  &&  (loc3_0_3 == 0  &&  (loc3_0_2 == 0  &&  loc0_0_0 == 0))))))))))))  &&  ([](<>((((((nsnte < ((2 * T) + 1)  ||  (loc2_0_2 == 0  &&  (loc2_1_2 == 0  &&  (loc2_1_0 == 0  &&  (loc2_0_0 == 0  &&  (loc2_2_3 == 0  &&  (loc2_2_2 == 0  &&  (loc2_3_2 == 0  &&  (loc2_3_4 == 0  &&  loc2_3_3 == 0)))))))))  &&  (nsnte < ((2 * T) + 1)  ||  (loc1_0_2 == 0  &&  (loc1_1_2 == 0  &&  (loc1_1_0 == 0  &&  (loc1_0_0 == 0  &&  (loc1_2_3 == 0  &&  (loc1_2_2 == 0  &&  (loc1_3_4 == 0  &&  (loc1_3_3 == 0  &&  loc1_3_2 == 0))))))))))  &&  ((nsnte < (T + 1)  ||  nsnte >= ((2 * T) + 1))  ||  (loc1_0_2 == 0  &&  (loc1_1_2 == 0  &&  (loc1_1_0 == 0  &&  (loc1_0_0 == 0  &&  (loc1_2_3 == 0  &&  (loc1_2_2 == 0  &&  (loc1_3_4 == 0  &&  (loc1_3_3 == 0  &&  loc1_3_2 == 0))))))))))  &&  (nsnte < ((2 * T) + 1)  ||  (loc0_1_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc0_1_0 == 0  &&  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc0_3_4 == 0  &&  (loc0_3_3 == 0  &&  (loc0_3_2 == 0  &&  loc0_0_0 == 0)))))))))))  &&  ((nsnte < (T + 1)  ||  nsnte >= ((2 * T) + 1))  ||  (loc0_1_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc0_1_0 == 0  &&  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc0_3_4 == 0  &&  (loc0_3_3 == 0  &&  (loc0_3_2 == 0  &&  loc0_0_0 == 0)))))))))))  &&  ((nsnte < 1  ||  nsnte >= (T + 1))  ||  (loc0_1_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc0_1_0 == 0  &&  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc0_3_4 == 0  &&  (loc0_3_3 == 0  &&  (loc0_3_2 == 0  &&  loc0_0_0 == 0)))))))))))))) -> ((loc1_0_2 != 0  ||  (loc2_0_2 != 0  ||  (loc0_1_2 != 0  ||  (loc1_1_2 != 0  ||  (loc2_1_2 != 0  ||  (loc0_0_2 != 0  ||  (loc0_1_0 != 0  ||  (loc1_1_0 != 0  ||  (loc2_1_0 != 0  ||  (loc2_0_0 != 0  ||  (loc1_0_0 != 0  ||  (loc0_2_3 != 0  ||  (loc0_2_2 != 0  ||  (loc0_3_4 != 0  ||  (loc0_3_3 != 0  ||  (loc0_3_2 != 0  ||  (loc1_2_3 != 0  ||  (loc1_2_2 != 0  ||  (loc2_2_3 != 0  ||  (loc2_2_2 != 0  ||  (loc2_3_2 != 0  ||  (loc1_3_4 != 0  ||  (loc1_3_3 != 0  ||  (loc2_3_4 != 0  ||  (loc2_3_3 != 0  ||  (loc1_3_2 != 0  ||  (loc3_2_2 != 0  ||  (loc3_1_2 != 0  ||  (loc3_3_2 != 0  ||  (loc3_3_3 != 0  ||  (loc3_1_3 != 0  ||  (loc3_3_4 != 0  ||  (loc3_2_3 != 0  ||  (loc3_0_3 != 0  ||  (loc3_0_2 != 0  ||  loc0_0_0 != 0)))))))))))))))))))))))))))))))))))  ||  (<>(loc0_3_4 != 0  ||  (loc1_3_4 != 0  ||  (loc2_3_4 != 0  ||  loc3_3_4 != 0))))));
+    unforg: (( ! (loc1_0_2 == 0  &&  (loc2_0_2 == 0  &&  (loc0_1_2 == 0  &&  (loc1_1_2 == 0  &&  (loc2_1_2 == 0  &&  (loc0_0_2 == 0  &&  (loc0_0_1 == 0  &&  (loc0_2_3 == 0  &&  (loc0_2_2 == 0  &&  (loc0_3_4 == 0  &&  (loc0_3_3 == 0  &&  (loc0_3_2 == 0  &&  (loc1_2_3 == 0  &&  (loc1_2_2 == 0  &&  (loc2_2_3 == 0  &&  (loc2_2_2 == 0  &&  (loc2_3_2 == 0  &&  (loc1_3_4 == 0  &&  (loc1_3_3 == 0  &&  (loc2_3_4 == 0  &&  (loc2_3_3 == 0  &&  (loc1_3_2 == 0  &&  (loc3_2_2 == 0  &&  (loc3_1_2 == 0  &&  (loc3_3_2 == 0  &&  (loc3_3_3 == 0  &&  (loc3_1_3 == 0  &&  (loc3_3_4 == 0  &&  (loc3_2_3 == 0  &&  (loc3_0_3 == 0  &&  loc3_0_2 == 0)))))))))))))))))))))))))))))))  ||  ([](loc0_3_4 == 0  &&  (loc1_3_4 == 0  &&  (loc2_3_4 == 0  &&  loc3_3_4 == 0)))));
+  }
+} /* Proc */

@@ -1,0 +1,327 @@
+\usepackage{subcaption}
+\usepackage{xcolor, colortbl}
+\usepackage{amsfonts}
+\usepackage{amsmath,thm-restate}
+\usepackage{amssymb}
+\usepackage{temporal}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage[inline]{enumitem}
+\usepackage{wrapfig}
+\usepackage{environ}
+\usepackage{multirow}
+\usepackage{xspace}
+\usepackage{color}
+\usepackage{thmtools}
+\usepackage{makecell}
+\usepackage{pgf}
+\usepackage{caption}
+\usepackage{mdframed}
+\definecolor{mygreen}{RGB}{0,150,0}
+\usepackage{pifont} % symboles
+\newcommand{\xmark}{\leavevmode{\color{red}\ding{55}}}%
+\newcommand{\cmark}{\leavevmode{\color{green!75!black}\ding{51}}}%
+
+
+\newcommand{\mailto}[1]{\href{mailto:#1}{\nolinkurl{#1}}}
+
+% general logic notation
+\newcommand{\modelsg}[1]{\models_{#1}}
+\newcommand{\mT}{\mathcal{T}}
+\newcommand{\mTz}{\mathcal{T}^{z}}
+\newcommand{\mR}{\mathcal{R}}
+\newcommand{\mI}{\mathcal{I}}
+\newcommand{\mC}{\mathcal{C}}
+\newcommand{\mD}{\mathcal{D}}
+\newcommand{\mF}{\mathcal{F}}
+\newcommand{\mX}{\mathcal{X}}
+\newcommand{\mM}{\mathcal{M}}
+\newcommand{\mN}{\mathcal{N}}
+\newcommand{\mA}{\mathcal{A}}
+\newcommand{\mP}{\mathcal{P}}
+\newcommand{\mB}{\mathcal{B}}
+\newcommand{\mU}{\mathcal{U}}
+\newcommand{\mS}{\mathcal{S}}
+\newcommand{\mE}{\mathcal{E}}
+\newcommand{\mQ}{\mathcal{Q}}
+\newcommand{\mAR}{\mathcal{AR}}
+\newcommand{\mTH}{\mathcal{TH}}
+\newcommand{\bbN}{\mathbb{N}}
+\newcommand{\bbB}{\mathbb{B}}
+\newcommand{\bbR}{\mathbb{R}}
+
+
+% general logic notation
+\newcommand{\vec}[1]{\mathbf{#1}}
+
+% (non-abstract) threshold automata
+\newcommand{\resets}{\tau}
+\newcommand{\Shared}{\Gamma}
+\newcommand{\vP}{\vec{P}}
+\newcommand{\vp}{\vec{p}}
+\newcommand{\from}{\textit{from}}
+\newcommand{\to}{\textit{to}}
+\newcommand{\vup}{\vec{uv}}
+\newcommand{\Rules}{\mR}
+\newcommand{\Paths}{\mP(TA)}
+
+
+% (non-abstract) counter systems
+\newcommand{\cs}{\mathsf{CS}}
+\newcommand{\csa}{\mathsf{CS(A)}}
+\newcommand{\vg}{\vec{g}}
+\newcommand{\vk}{\vec{k}}
+\newcommand{\Confs}{\Sigma}
+\newcommand{\conf}{\sigma}
+\newcommand{\Trans}{\mT}
+
+% abstract threshold automata
+\newcommand{\absTA}{\overline{\text{TA}}}
+\newcommand{\absA}{\overline{A}}
+\newcommand{\absShared}{\overline{\Shared}}
+\newcommand{\absRules}{\overline{\Rules}}
+\newcommand{\bx}{\overline{x}}
+\newcommand{\ar}{\overline{r}}
+
+% abstract counter systems
+\newcommand{\acs}{\mathsf{ACS}}
+\newcommand{\acsa}{\mathsf{ACS(\absA)}}
+\newcommand{\avg}{\overline{\vg}}
+\newcommand{\absConfs}{\overline{\Confs}}
+\newcommand{\absconf}{\overline{\conf}}
+\newcommand{\absTrans}{\overline{\Trans}}
+\newcommand{\abcs}{(\absConfs, \absConfs_0, \absTrans)}
+\newcommand{\bvarphi}{\overline{\varphi}}
+\newcommand{\bphi}{\overline{\varphi}}
+
+% 01-counter systems
+\newcommand{\zcs}{\mathsf{ZCS}}
+\newcommand{\zcsa}{\mathsf{ZCS(\absA)}}
+\newcommand{\zConfs}{\Confs^z}
+\newcommand{\zconf}{{\conf^{z}}}
+\newcommand{\zpi}{\mathsf{\pi^z}}
+\newcommand{\vkz}{\vec{k}^{z}}
+
+% not checked
+\newcommand{\vx}{\vec{x}}
+\newcommand{\vc}{\vec{c}}
+\newcommand{\vv}{\vec{v}}
+\newcommand{\vs}{\vec{s}}
+\newcommand{\vi}{\vec{i}}
+\newcommand{\vcp}{\vec{c\scriptstyle'}}
+\newcommand{\vcpp}{\vec{c\scriptstyle''}}
+\newcommand{\vu}{\vec{u}}
+\newcommand{\vxa}[1][]{\vec{x}_{A_{#1}}}
+\newcommand{\vxb}[1][]{\vec{x}_{B_{#1}}}
+\newcommand{\vcb}{\vec{c}^b}
+\newcommand{\AP}{{\sf AP}}
+
+\newcommand{\bigdotcup}{\mathaccent\cdot{\bigcup}}
+\newcommand{\pclass}{{\sf cl}}
+\newcommand{\val}{{\sf val}}
+\newcommand{\guard}{{\sf guard}}
+\newcommand{\eval}{{\sf eval}}
+\newcommand{\init}{{\sf init}\xspace}
+\newcommand{\templates}{T}
+\newcommand{\templateI}{A}
+\newcommand{\templateII}{B}
+\newcommand{\formula}{F}
+\newcommand{\formulas}{\mathcal{\formula}}
+\newcommand{\inputs}{\Sigma}
+\newcommand{\localin}{\sigma}
+\newcommand{\globIn}{E}
+\newcommand{\bpi}{\mathsf{\bar{\pi}}}
+
+
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkblue}{rgb}{0,0,.5}
+\definecolor{mygray}{gray}{.3}
+
+%% macros for LTSs (states, state sets, etc.)
+%% to change whole batch, just change \state command
+\newcommand{\state}{q}
+\newcommand{\states}{\textsf{set}}
+\newcommand{\cstate}{s}
+\newcommand{\cstateset}{S}
+\newcommand{\initstate}{{\sf init}\xspace}
+\newcommand{\stateset}{\expandafter\MakeUppercase\expandafter{\state}}
+%\newcommand{\State}{s}
+\newcommand{\Stateset}{\expandafter\MakeUppercase\expandafter{\State}}
+\newcommand{\LTS}{\mathcal \stateset}
+%% transition function, state labels, ...
+\newcommand{\labeling}{L}
+\newcommand{\labelings}{\mathcal{\labeling}}
+\newcommand{\outputs}{O}
+\newcommand{\time}{m}
+\newcommand{\dead}{{\sf dead}\xspace}
+\newcommand{\Enable}{{\sf Enable}\xspace}
+\newcommand{\appears}{{\sf appears}\xspace}
+\newcommand{\last}{{\sf last}\xspace}
+\newcommand{\occurs}{{\sf occurs}\xspace}
+\newcommand{\maxD}{{\sf maxD}\xspace}
+
+\newcommand{\myloop}[1]{#1 \rightarrow \initstate \rightarrow #1\xspace}
+
+
+%% set cardinality
+\newcommand{\card}[1]{\left| {#1} \right|}
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\Int}{\mathbb{Z}}
+\newcommand{\Bool}{\mathbb{B}}
+\newcommand{\phil}{\varphi^{\leq}}
+\newcommand{\phiu}{\varphi^{>}}
+\newcommand{\bphil}{\bar{\varphi}^{\leq}}
+\newcommand{\bphiu}{\bar{\varphi}^{>}}
+%% 'such that'
+\newcommand{\|}{\mid}
+\newcommand{\smi}{\!\setminus\!}
+%% disjoint union
+\newcommand{\cupdot}{\mathbin{\dot{\cup}}}
+
+%paragraph with some skip and bold heading
+\newcommand{\smartpar}[1]{\medskip \noindent {\bf #1.}}
+
+
+%% specification, implication
+\newcommand{\spec}{\Phi}
+\newcommand{\pspec}{\Phi}
+\newcommand{\impl}{\rightarrow}
+\newcommand{\Impl}{\Rightarrow}
+\newcommand{\Implied}{\Leftarrow}
+\newcommand{\iff}{\Leftrightarrow}
+
+%\newtheorem{thm}{Theorem}
+%\newtheorem{lem}{Lemma}
+%\newtheorem{cor}[thm]{Corollary}
+%\newtheorem{exa}{Example}
+%\newtheorem{obs}{Observation}
+\newcommand{\disj}[1]{\exists\{#1\}}
+\newcommand{\conj}[1]{\forall\{#1\}}
+
+% Disj proof
+\newcommand{\sys}[1]{A {\parallel} B^(#1)\xspace}%{(A,B)^{(#1)}}
+\newcommand{\cutoffsys}{A {\parallel} B^c\xspace}%{\ensuremath{(A,B)^{(1,c)}}\xspace}
+\newcommand{\largesys}{A {\parallel} B^n\xspace}%{\ensuremath{(A,B)^{(1,n)}}\xspace}
+\newcommand{\largesyse}[1]{A {\parallel} B^{#1}\xspace}
+\newcommand{\interleave}{\textit{interleave}\xspace}
+%\newcommand{\first}{\textit{first}}
+%\newcommand{\last}{\mathsf{last}}
+\newcommand{\l}{\mathsf{l}}
+\newcommand{\f}{\mathsf{f}}
+\newcommand{\rpt}{\mathsf{rpt}}
+% \newcommand{\ppi}{\mathsf{pi}}
+\newcommand{\ppi}[1]{\mathsf{p}_{\circlearrowleft #1}}
+\newcommand{\ei}[1]{\mathsf{e}_{\circlearrowleft #1}}
+\newcommand{\qstar}{{q^\star}}
+\newcommand{\estar}{{\mathsf{e}^\star}}
+\newcommand{\fstar}{{\mathsf{f}^\star}}
+\newcommand{\fin}{\textit{fin}}
+\newcommand{\pref}{\mathsf{pref}}
+\newcommand{\reach}{\mathsf{reach}}
+\newcommand{\tpref}{\textit{pref}}
+
+\newcommand{\inf}{\textit{inf}}
+\newcommand{\lo}{\circlearrowleft}
+
+\newcommand{\others}{\textit{others}}
+\newcommand{\looop}{\textit{loop}}
+\newcommand{\xloop}{\mathsf{xloop}}
+\newcommand{\yloop}{\mathsf{yloop}}
+\newcommand{\yround}{\mathsf{round}}
+\newcommand{\inject}{\mathsf{inject}}
+
+\newcommand{\Xrightarrow}[2]{\xrightarrow{#1}{}\negthickspace^{#2}\ }
+\newcommand{\transition}[3]{#1 \xrightarrow{#2} #3}
+\newcommand{\transitionP}[4]{#1 \Xrightarrow{#2}{#3} #4}
+\newcommand{\slice}[2]{[{#1}\!:\!{#2}]}
+\newcommand{\MinComp}[1]{\ensuremath{x(B^{\witfirst_{#1}})\slice{1}{\first_{#1}\!\!-\!\!1}}}
+\newcommand{\flood}{\textit{flood}}
+\newcommand{\yflood}{y^\flood}
+\newcommand{\sflood}{s^\flood}
+\newcommand{\eflood}{e^\flood}
+\newcommand{\Pflood}{P^\flood}
+\newcommand{\fair}{\textit{fair}}
+\newcommand{\yfair}{y^\fair}
+\newcommand{\sfair}{s^\fair}
+\newcommand{\efair}{e^\fair}
+\newcommand{\Pfair}{P^\fair}
+\newcommand{\evac}{\textit{evac}}
+\newcommand{\yevac}{y^\evac}
+\newcommand{\sevac}{s^\evac}
+\newcommand{\eevac}{e^\evac}
+\newcommand{\Pevac}{P^\evac}
+\newcommand{\qloop}{q}
+\newcommand{\eloop}{e}
+
+% add line breaks to table cells, to labels of tikz 
+% usage: \specialcell{first line \\ second line} 
+\newcommand{\specialcellC}[2][c]{%
+  \begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+\newcommand{\specialcellL}[2][c]{%
+  \begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+
+
+\newcommand{\CURRENT}{\hl{CURRENT}}
+
+%% Latex `sugar' extensions
+\newcommand{\li}{\begin{itemize}}
+\newcommand{\il}{\end{itemize}}
+\newcommand{\-}{\item}
+
+\newcommand{\myparagraphraw}[1]{\smallskip\noindent{\bf#1}}
+\newcommand{\myparagraph}[1]{\myparagraphraw{#1.}}
+
+\newcommand{\ord}{\lesssim}
+\newcommand{\zord}{\ord^z}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{float}
+
+\newcommand{\nuparrow}{\hspace{0.1cm}\uparrow \hspace{-0.1cm}}
+\newcommand{\guardset}{\mathcal{G}}
+
+\newcommand{\cbasis}{\begin{array}{l}
+		CBasis  = \{ (\state_A,\vc) \in \cstateset \mid \exists (\state'_A,\vcp) \in R: \\
+	\ \ \boldsymbol{[ \:} (\state_A,g,\state'_A) \in \delta_A \land (\state_A,\vc) \modelsg{\state_A} g 
+	\land (\: (
+	\vc=\vcp) \lor  ( \vcp(t) = 0 \land \vc=\vcp+\vu_t) \:) \boldsymbol{\:]}\\
+	\ \ \lor \boldsymbol{[\:} (\state_i,\{q_t\},\state_j) \in \delta_B \land (\state_A,\vc) \modelsg{\state_i} g \land \state_A = \state'_A \\	
+	\ \ \ \ \land \boldsymbol{(}\ \ \ \ ( \vc = \vcp + \vu_i - \vu_j ) \lor ( \vcp(t) = 0 \land \vcp(j) \geq 1 \land \vc = \vcp + \vu_i - \vu_j + \vu_t)\\
+	\ \ \ \ \ \ \ \ \lor ( f \land \vc = \vcp + \vu_i ) \lor ( \: \vcp(t) = 0 \land \vcp(j)=0 \land \vc = \vc + \vu_i + \vu_t )\boldsymbol{\:\: )} \boldsymbol{\:]} \: \:\}.  ~~~~\qed
+	\end{array}}
+	
+\newcommand{\globally}{\square}
+\newcommand{\algorithmicthen}{}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% LINE NUMBERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[pagewise]{lineno} % switch, modulo
+\newcommand\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TA Syntax
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{bluekeywords}{HTML}{0052CC}
+\definecolor{lightbluekeywords}{HTML}{009CC4}
+\definecolor{greentypes}{HTML}{00CC44}
+\definecolor{graynumbers}{rgb}{0.5, 0.5, 0.5}
+\definecolor{greencomments}{rgb}{0.6, 0.4, 0.9}
+
+\definecolor{orange}{RGB}{209, 106, 10}
+\definecolor{violet}{RGB}{98, 4, 145}
+\definecolor{red}{RGB}{148, 4, 4}
+
+
+\usepackage[]{listings}
+
+% Marker for general trasition systems with named states
+\definecolor{cispa-blue}{HTML}{009CC4}
+\definecolor{cispa-blue-20}{HTML}{D5ECF6}
+\definecolor{cispa-anthracite}{HTML}{1C1C1C}
+
+\definecolor{Gray}{gray}{0.925}

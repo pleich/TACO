@@ -1,0 +1,110 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\input{preamble}
+
+\title{Welcome to TACO!}
+\date{\today}
+
+\begin{document}
+    \maketitle
+    
+    Welcome to the documentation of the Threshold Automata for COnsensus (TACO) toolsuite! 
+
+    \begin{abstract}
+    TACO is a model checker designed to verify distributed protocols, for example, byzantine consensus protocols, modeled as a threshold automata (TA).
+
+    It can be used as a completely push-button tool - supply it with a TA and a specification, and it will automatically choose a model checking algorithm and check whether the specification is satisfied.
+    This allows you to model check threshold automata (and distributed algorithms in general) even if you are not an expert.
+
+    TACO features an extensively documented API, both for internal procedures as well as for the CLI.
+    In case of user errors such as faulty inputs, or if a given input is not supported by the chosen algorithm, it provides easy to read error messages in a user- and infrastructure-friendly output format via Rust's log trait.
+    \end{abstract}
+
+    \section{Organization of the Documentation}
+
+    TACOs documentation contains three main sections:
+
+    \begin{itemize}[noitemsep,topsep=5pt]
+    
+        \item \href{./theoretical-background.tex}{} gives an introduction to the threshold automaton model as well as a brief introduction to the different specification formats supported by TACO.
+            Additionally, it contains a high-level overview of the model checking algorithms implemented in TACO.
+        
+        \item \href{./usage-cli.md}{} describes how to use the TACO CLI for model checking and also contains more details on TACO's input formats.
+        
+        \item \href{./dev-docs.md}{} gives an overview of the crates of TACO and serves as an entrypoint to the documentation of the TACO internal APIs. Additionally it contains setup instructions for a development environment for working on the TACO source code.
+        
+    \end{itemize}
+
+    
+    \section{High-Level Architecture of TACO}
+
+    TACO consists of representations for different flavors of so called Threshold Automata (TA)~\citep{KonnovVW14} (see \href{./theoretical-background.tex}{}), on different abstraction levels, back-end components such as a unified interface to binary decision diagram (BDD) libraries and satisfiability modulo theories (SMT) solvers, three model checker implementations, as well as utility code, e.g., a parser for specification files or the command line interface (CLI).
+
+    All components are designed to be usable individually to enable fast and easy development of, for example, new model checking algorithms, different user interfaces, new specification formats or testing of new backends like a new BDD library.
+    A high-level overview of the architecture is provided in \cref{fig:architecture}.
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.9\textwidth]{resources/architecture-diagram}
+        \caption{Architecture of the TACO toolsuite.}\label{fig:architecture}
+    \end{figure}
+
+
+    \section{Tool Features}\label{sec:features}
+   
+
+    \subsection{Features for Algorithm Designers}
+    Algorithm designers do not only get a yes/no answer whether the current protocol satisfies the specification but can get various other outputs.
+    Firstly, for more intuitive modeling and verification, TACO supports the visualization of TA. 
+    Additionally, if an error is found during verification, a concrete error trace is printed that points to the problem in the current design.
+    You can also choose whether a compact representation of error paths should be printed, which omits locations with 0 processes and variables that are 0.
+    Finally, the two algorithms that construct error graphs can produce helpful intermediate results in the form of abstract error paths even if these are spurious, they can help you to amend the protocol to remove bugs or to make it more easily verifiable.
+
+    \subsection{Features for Formal Methods Experts}
+    While TACO can be used as a push-button tool, based only on an input TA and a specification, its behavior can be guided through a wealth of parameters.
+
+    First, you can of course choose which of the three model checking algorithms to use. 
+    Moreover, TACO allows for the fine-grained configuration of the underlying SMT solvers and BDD managers, for example to choose SMT solving heuristics.
+    For specifications composed of multiple properties, you can choose whether TACO should terminate after finding the first violation or whether it should continue until all properties are verified.
+
+    Additionally, the ZCS approach can optionally be used as a heuristic that only tries to verify safety by checking if the error graph is empty.
+    This check over-approximates the possible behaviors of the TA, but it can be much more efficient than a full model checking run.
+
+    \subsection{Extensions of the System Model}
+    TACO goes beyond the decidable fragment of threshold automata \citep{KonnovVW14,Kukovec0W18}.
+    It is the first tool to support \emph{extended threshold automata} (ETAs) \citep{KonnovVW14,BaumeisterEJSV24} that also allow for variable decrements and resets. Of course, TACO is not guaranteed to terminate for such inputs. Still, our experiments indicate that it can be a useful tool for algorithms that need the expressivity. 
+
+    \subsection{Preprocessing}
+    When given a threshold automaton uses a static analysis of the TA and the specification to simplify the problem and remove unnecessary locations and variables. 
+    This includes self-loops of the TA that do not have any effect (i.e., they do not change the value of any variable), or transition guards that are trivial because they will always be satisfied for the given resilience condition specified in the TA.
+
+    Moreover, if TACO can statically determine that some locations are never reachable because they are empty initially and there are no incoming transitions from non-empty locations, then we completely remove these locations from the TA when checking the given property.
+    Note that this may depend on the given specification, as it may specify that some of the initial locations should be empty.
+
+    \subsection{Code Quality}
+    The goal of a model checker is to verify safety of a protocol, thereby increasing trust in its correctness.
+    However, we still need to trust the verifier.
+    While we have not proven the correctness of TACO in a proof assistant, TACO uses extensive testing (around 97\% of line coverage at the time of writing) and uses software engineering best practices, such as code reviews and linting to maintain a (somehwhat) trust worthy code base. 
+
+    Additionally, TACO is written entirely in the safe fragment of Rust (simply called \emph{safe Rust}), guaranteeing memory and type safety while not adding major overhead and allowing for low-level optimizations.
+
+    
+    \subsection{Modularity}
+    Our goal with the design of TACO was not only to provide an efficient implementation of model checking algorithms but also to enable others to write tools for threshold automata. 
+    In this spirit, we designed TACO in a highly modular fashion. 
+
+    Most major components, such as parser and preprocessor, or different TA representations and model checking algorithms, are separated into individual Rust crates and specific features are guarded by feature flags.
+    This design for example allows you to easily create a new user interface by integrating the parser and one of the model checkers while not importing our CLI and the other model checking algorithms.
+    Similarly, new specification formats can simply be implemented by implementing the existing parser trait.
+
+    The same modular approach has been taken for backend components such as SMT solvers or BDD libraries.
+    TACO supports any SMT solver that uses the SMTLIB2 standard~\citep{barrett2010smt} and has an interactive mode.
+    For BDD libraries we implemented a simple high-level interface, which requires minimal code to add a new library, and we currently support CUDD~\citep{cudd} and OxiDD~\citep{oxidd24}.
+
+    Please feel free to use TACO and all of its components to build your own tools for threshold automata or integrate TACO with your SMT solvers or BDD libraries. The \href{./dev-docs.md}{} should provide you with all the details on TACO's components and enable you to set up a development environment.
+
+    \bibliographystyle{plain}
+    \bibliography{references}
+
+\end{document}

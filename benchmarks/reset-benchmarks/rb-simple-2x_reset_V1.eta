@@ -1,0 +1,215 @@
+/* a threshold automata for the binary value broadcast in the paper: Holistic verification of Blockchain protocol */
+
+skel Proc {
+
+  local pc;
+  shared bvb0, bvb1, a0, a1, dbvb0, dbvb1, da0, da1, a0pa1, da0pa1, count;
+  parameters N, T, F;
+
+
+  assumptions (0) {
+    N > 3 * T;
+    T >= F;
+    F >= 0;
+  }
+
+  locations (0) {
+    locV0: [0];
+    locV1: [1];
+    locM: [2];
+    locM0: [3];
+    locM1: [4];
+    locM01: [5];
+    locE0: [6];
+    locE1: [7];
+    locD0: [8];
+    locD1: [9];
+    locV0d: [10];
+    locV1d: [11];
+    locMd: [12];
+    locM0d: [13];
+    locM1d: [14];
+    locM01d: [15];
+    locE0d: [16];
+    locE1d: [17];
+    locD0d: [18];
+    locV0dd: [19];
+    locV1dd: [20];
+  }
+
+  inits (0) {
+    locV0 == N - F;
+    locV1 == 0;
+    locM == 0;
+    locM0 == 0;
+    locM1 == 0;
+    locM01 == 0;
+    locE0 == 0;
+    locE1 == 0;
+    locD0 == 0;
+    locD1 == 0;
+    locV0d == 0;
+    locV1d == 0;
+    locMd == 0;
+    locM0d == 0;
+    locM1d == 0;
+    locM01d == 0;
+    locE0d == 0;
+    locE1d == 0;
+    locD0d == 0;
+    locV0dd == 0;
+    locV1dd == 0;
+    bvb0 == 0;
+    bvb1 == 0;
+    a0 == 0;
+    a1 == 0;
+    dbvb0 == 0;
+    dbvb1 == 0;
+    da0 == 0;
+    da1 == 0;
+    a0pa1 == 0;
+    da0pa1 == 0;
+    count == 0;
+  }
+
+  rules (19) {  
+ 
+  0: locV0 -> locM
+      when (true)
+      do {bvb0' == bvb0 + 1; };
+  1: locV1 -> locM
+      when (true)
+      do {bvb1' == bvb1 + 1; };
+  2: locM -> locM
+      when (true)
+      do{};
+  3: locM -> locM0
+      when (bvb0 >= 1)
+      do{a0' == a0 + 1; a0pa1' == a0pa1 + 1; };
+  4: locM -> locM1
+      when (bvb1 >= 1)
+      do{a1' == a1 + 1; a0pa1' == a0pa1 + 1;};      
+  5: locM0 -> locM0
+      when (true)	
+      do{};                 
+  6: locM0 -> locE0
+      when (a0 >= N - T - F)
+      do{}; 
+  7: locM0 -> locM01
+      when (bvb1 >= 1)
+      do{};  
+  8: locM1 -> locM1
+      when (true)	
+      do{};                 
+  9: locM1 -> locD1
+      when (a1 >= N - T - F)
+      do{}; 
+  10: locM1 -> locM01
+      when (bvb0 >= 1)
+      do{};
+  11: locM01 -> locM01
+      when (true)
+      do{};
+  12: locM01 -> locE0
+      when (a0 >= N - T - F)
+      do{};
+  13: locM01 -> locE1
+      when (a0pa1 >= N - T - F)
+      do{};
+  14: locM01 -> locD1
+      when (a1 >= N - T - F)
+      do{};
+  15: locE0 -> locV0d
+      when (true)
+      do{count' == count + 1;};
+  16: locE1 -> locV1d
+      when (true)
+      do{count' == count + 1;};
+  17: locD1 -> locV1d
+      when (true)
+      do{count' == count + 1;}; 
+  18: locV0d -> locV0dd
+      when (count >= N - F)
+      do {bvb0' == 0; bvb1' == 0; a0' == 0; a1' == 0; dbvb0' == 0; dbvb1' == 0; da0' == 0; da1' == 0; a0pa1' == 0; da0pa1' == 0; count' == 0; };
+  19: locV1d -> locV1dd 
+      when (count >= N - F)
+      do {bvb0' == 0; bvb1' == 0; a0' == 0; a1' == 0; dbvb0' == 0; dbvb1' == 0; da0' == 0; da1' == 0; a0pa1' == 0; da0pa1' == 0; count' == 0;  };
+
+  20: locV0dd -> locMd
+      when (true)
+      do {dbvb0' == dbvb0 + 1; };
+  21: locV1dd -> locMd
+      when (true )
+      do {dbvb1' == dbvb1 + 1; };
+      
+  22: locV0d -> locMd
+      when (count < 1)
+      do {dbvb0' == dbvb0 + 1; };
+  23: locV1d -> locMd
+      when (count < 1 )
+      do {dbvb1' == dbvb1 + 1; };
+  24: locMd -> locMd
+      when (true)
+      do{};
+  25: locMd -> locM0d
+      when (dbvb0 >= 1)
+      do{da0' == da0 + 1; da0pa1' == da0pa1 + 1; };
+  26: locMd -> locM1d
+      when (dbvb1 >= 1)
+      do{da1' == da1 + 1; da0pa1' == da0pa1 + 1;};      
+  27: locM0d -> locM0d
+      when (true)	
+      do{};                 
+  28: locM0d -> locD0
+      when (da0 >= N - T - F)
+      do{count' == count + 1;}; 
+  29: locM0d -> locM01d
+      when (dbvb1 >= 1)
+      do{};  
+  30: locM1d -> locM1d
+      when (true)	
+      do{};                 
+  31: locM1d -> locE1d
+      when (da1 >= N - T - F)
+      do{count' == count + 1;}; 
+  32: locM1d -> locM01d
+      when (dbvb0 >= 1)
+      do{};
+  33: locM01d -> locM01d
+      when (true)
+      do{};
+  34: locM01d -> locD0
+      when (da0 >= N - T - F)
+      do{count' == count + 1;};
+  35: locM01d -> locE0d
+      when (da0pa1 >= N - T - F)
+      do{count' == count + 1;};
+  36: locM01d -> locE1d
+      when (da1 >= N - T - F)
+      do{count' == count + 1;};
+  37: locE1d -> locV1
+      when (count < 1)
+      do {};
+  38: locE0d -> locV0
+      when (count < 1)                        
+      do{};
+  39: locD0 -> locV0
+      when (count < 1)                       
+      do{};
+  40: locE1d -> locV1
+      when (count >= N - F)                       /*   add resets      */
+      do{bvb0' == 0; bvb1' == 0; a0' == 0; a1' == 0; dbvb0' == 0; dbvb1' == 0; da0' == 0; da1' == 0; a0pa1' == 0; da0pa1' == 0; count' == 0; };
+  41: locE0d -> locV0
+      when (count >= N - F)                        /*   add resets      */
+      do{bvb0' == 0; bvb1' == 0; a0' == 0; a1' == 0; dbvb0' == 0; dbvb1' == 0; da0' == 0; da1' == 0; a0pa1' == 0; da0pa1' == 0; count' == 0; };
+  42: locD0 -> locV0
+      when (count >= N - F)                        /*   add resets      */
+      do{bvb0' == 0; bvb1' == 0; a0' == 0; a1' == 0; dbvb0' == 0; dbvb1' == 0; da0' == 0; da1' == 0; a0pa1' == 0; da0pa1' == 0; count' == 0; };
+  }
+  
+
+  specifications (0) {
+    
+    validity1: (locV1 == 0) -> [](locD1 == 0);
+  }
+} /* Proc */ 
