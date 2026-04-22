@@ -24,6 +24,8 @@ EXECUTABLE="${EXECUTABLE:=./bymc/verify}"
 # Configure whether to run the specified model checkers on the extended set of
 # benchmarks
 EXTENDED="${EXTENDED:=false}"
+# Smoke Test Run
+SMOKE="${SMOKE:=false}"
 
 
 ################################################################################
@@ -423,6 +425,32 @@ run_rb_wo_reset_benchmarks () {
 }
 
 
+# Execute the smoke tests
+smoke_tests () {
+    printf "Executing the smoke tests
+
+This mode will execute the 'ByMC Handcoded ISOLA18' benchmarks for ByMC. All of 
+these benchmarks should be reported to be safe, and some benchmarks should 
+finish within the 30s timeout set for this benchmark run by default.
+
+(In case all dependencies are met,) this script will also produce a table 
+summarizing the results in a CSV file called '${CSV_FILE_NAME}'. The table 
+should roughly match the table reported in the paper.
+"
+    LOGFILE=/dev/null
+    FAIL_ON_ERROR=true
+    
+    # if the default timeout has not been overwritten
+    if [ $TIMEOUT = "20m" ]; then 
+        TIMEOUT='30s'
+    fi
+
+    run_small_benchmarks "-O schema.tech=ltl" "ltl"
+
+    printf "\nFinished executing smoke tests\n\n"
+}
+
+
 
 ################################################################################
 ### Main functionality of the benchmarking script
@@ -448,13 +476,20 @@ while [ $# -gt 0 ]; do
         LOGFILE=/dev/null
         shift # past argument
         ;;
+    -s|--smoke)
+        SMOKE=true
+        LOG_TO_STDOUT=true
+        shift # past argument
+        ;;
     -h|--help)
         printf "ByMC Benchmark Script help
 
 This is the ByMC benchmark script designed to benchmark the ByMC model checker.
 This scripts supports the following options:
     -h | --help     : Print this message
-    -t | --timeout  : Override the per benchmark timeout (default: '1h')
+    -t | --timeout  : Override the per benchmark timeout (default: '20min')
+    -s | --smoke      : Execute a small set of benchmarks for the specified model 
+                        checkers (default: all) that should terminate within 5min
     -e | --extended   : Benchmark the full extended set of benchmarks (this can
                         take a lot of time!) 
     --log-to-stdout : Print the logs of the model checker to stdout instead of 
@@ -477,6 +512,32 @@ options.\n" 1>&2
         ;;
   esac
 done
+
+# Test whether permissions are correct on OUTDIR (need write + create of files)
+if [ -d "${OUTDIR}" ]; then
+    # Verify we can create files in OUTDIR
+    OUTDIR_TEST_FILE="${OUTDIR}/.taco-write-test.tmp"
+    touch "${OUTDIR_TEST_FILE}"
+    if [ ! -f "${OUTDIR_TEST_FILE}" ]; then
+        printf "Directory '${OUTDIR}' exists but is not writable / cannot create
+files in it. This error might be resolvable by adding :z after the volume mount 
+description. Check the README for details.
+
+If you chose to continue anyway, results will stay in the current working 
+directory. Sleeping 10s to give you time to abort.\n\n\n
+" 1>&2
+        OUTDIR=""
+        sleep 10
+    else
+        rm -f "${OUTDIR_TEST_FILE}"
+    fi
+fi
+
+# Run the smoke tests and exit
+if [ $SMOKE = true ]; then 
+    smoke_tests 
+    exit 0
+fi
 
 # Make the user aware of extended setting
 if [ "${EXTENDED}" = true ]; then
@@ -502,12 +563,12 @@ fi
 if [ -d "${OUTDIR}" ]; then
     echo "Moving the benchmark execution log '${LOGFILE}' and counterexamples 
 (which can be found in directory 'x') to local storage"
-    mv "${LOGFILE}" "${OUTDIR}"
-    cp -R ./x "${OUTDIR}"
+    cp --backup=t "${LOGFILE}" "${OUTDIR}"
+    cp --backup=t -R ./x "${OUTDIR}"
     if [ -f "${CSV_FILE_NAME}" ]; then 
         printf "Copying the benchmark result table '${CSV_FILE_NAME}' to local \
 storage\n"
-        cp "${CSV_FILE_NAME}" "${OUTDIR}"
+        cp --backup=t "${CSV_FILE_NAME}" "${OUTDIR}"
     fi
 else 
     printf "No output directory specified, or directory does not exist.
