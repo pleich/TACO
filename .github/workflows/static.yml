@@ -41,7 +41,7 @@ jobs:
         run: |
           rustup install ${RUST_VERSION}
           pip3 install mystmd --break-system-packages
-          cargo +${RUST_VERSION} install --locked cargo-about
+          cargo +${RUST_VERSION} install --locked --features cli cargo-about
       - name: Generate Docs
         run: |
           cd ./docs && myst build --html --ci --port 3042 && cd ../

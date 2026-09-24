@@ -43,7 +43,7 @@ jobs:
       - name: Generate Documentation
         run: cargo doc --no-deps --document-private-items --workspace
       - name: Install cargo-about
-        run: cargo +${RUST_VERSION} --locked --features cli cargo-about
+        run: cargo +${RUST_VERSION} install --locked --features cli cargo-about
       - name: Run license_check
         run: cargo about generate --workspace ./.config/about.hbs > third-party-licenses.html
 
