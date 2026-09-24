@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: sudo apt-get install -y python3 python3-pip nodejs npm --no-install-recommends
       - name: Install cargo, MyST and cargo-about

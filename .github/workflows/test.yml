@@ -17,7 +17,7 @@ jobs:
     env:
       RUSTFLAGS: "-D warnings"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install rust version
         run: rustup install ${RUST_VERSION}
       - name: Add rustfmt
@@ -35,7 +35,7 @@ jobs:
     env:
       RUSTFLAGS: "-D warnings"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install rust version
         run: rustup install ${RUST_VERSION}
       - name: Run Doctests
@@ -55,7 +55,7 @@ jobs:
     env:
       RUSTFLAGS: "-D warnings"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install rust version
         run: rustup install ${RUST_VERSION}
       - name: Add clippy
@@ -71,7 +71,7 @@ jobs:
     env:
       RUSTFLAGS: "-D warnings"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install rust version
         run: rustup install ${RUST_VERSION}
       - name: Install Dependencies (Z3,CVC5,Graphviz)
@@ -114,7 +114,7 @@ jobs:
     env:
       RUSTFLAGS: "-D warnings"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install rust version
         run: rustup install ${RUST_VERSION}
       - name: Install Dependencies (Z3,Graphviz)
@@ -159,7 +159,7 @@ jobs:
     env:
       RUSTFLAGS: "-D warnings"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install rust version
         run: rustup install ${RUST_VERSION}
       - name: Install Dependencies (Z3,CVC5,Graphviz)
