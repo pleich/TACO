@@ -496,13 +496,29 @@ fn get_smt_solver_version(cmd: &str) -> Result<(i32, i32, i32), GetVersionError>
         return Err(GetVersionError::NotInstalled(cmd.to_owned()));
     }
     let out = out.unwrap();
+    if let Ok(version) = parse_smt_solver_version_output(&out.stdout, &out.stderr) {
+        return Ok(version);
+    }
     if !out.status.success() {
         return Err(GetVersionError::NotInstalled(cmd.to_owned()));
     }
+    Err(GetVersionError::ParseVersionError)
+}
 
-    let out_str =
-        std::str::from_utf8(&out.stdout).map_err(|_| GetVersionError::ParseVersionError)?;
-    parse_smt_solver_version(out_str)
+fn parse_smt_solver_version_output(
+    stdout: &[u8],
+    stderr: &[u8],
+) -> Result<(i32, i32, i32), GetVersionError> {
+    for out in [stdout, stderr] {
+        if out.is_empty() {
+            continue;
+        }
+        let out_str = std::str::from_utf8(out).map_err(|_| GetVersionError::ParseVersionError)?;
+        if let Ok(version) = parse_smt_solver_version(out_str) {
+            return Ok(version);
+        }
+    }
+    Err(GetVersionError::ParseVersionError)
 }
 
 /// This function attempts to parse the version number from the output of the
@@ -720,6 +736,15 @@ Z3 version 4.8.12 - 64 bit";
 
         let got = parse_smt_solver_version(out);
         assert_eq!(got, Ok((4, 8, 12)))
+    }
+
+    #[test]
+    fn test_parse_version_from_stderr() {
+        let stderr = "\
+This is cvc5 version 1.4.0
+compiled with GCC version 14.2.1";
+        let got = parse_smt_solver_version_output(&[], stderr.as_bytes());
+        assert_eq!(got, Ok((1, 4, 0)));
     }
 
     #[test]
